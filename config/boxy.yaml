@@ -1,0 +1,4 @@
+imu_topic: "/sensors/imu"
+imu_rate: 400
+measure_rate: 100
+sequence_time: 3500 # 1 hour in seconds

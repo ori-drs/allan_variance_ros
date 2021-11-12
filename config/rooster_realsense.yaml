@@ -1,0 +1,4 @@
+imu_topic: "/camera/imu"
+imu_rate: 400
+measure_rate: 100
+sequence_time: 10800 # 3 hours in seconds

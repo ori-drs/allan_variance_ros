@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+
+  <node name="rosbag" pkg="rosbag" type="record"
+    args="-o $(env HOME)/logs/raw/allan_variance.bag -b 1024
+
+    /sensors/imu
+
+    /tf
+    /tf_static
+
+    /vicon/anymal_boxy_7_markers/anymal_boxy_7_markers
+    /vicon/anymal_coyote_7/anymal_coyote_7
+    /vicon/markers
+
+    " output="screen">
+  </node>
+</launch>
