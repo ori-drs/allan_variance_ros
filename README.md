@@ -1,5 +1,5 @@
 # Allan Variance ROS
-## ROS package which loads a rosbag of IMU data and compute Allan Variance parameters
+## ROS package which loads a rosbag of IMU data and computes Allan Variance parameters
 The purpose of this tool is to read a long sequence of IMU data and return the Angle Random Walk (ARW), Bias Instability and Random Walk for the gyroscope as well as Velocity Random Walk (VRW), Bias Instability and Random Walk for the accelerometer.
 
 
