@@ -11,7 +11,7 @@ Build the package:
 
 **Recommended:** Reorganize ROS messages by timestamp using ROS Cookbook:
 
-``rosrun allan_variance_ros cookbag --input original_rosbag --output cooked_rosbag``
+``rosrun allan_variance_ros cookbag.py --input original_rosbag --output cooked_rosbag``
 
 Run the Allan Variance computation tool:
 
