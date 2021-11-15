@@ -60,5 +60,6 @@ int main(int argc, char** argv) {
 
   double durationTime = (std::clock() - start) / (double)CLOCKS_PER_SEC;
   ROS_INFO("Total computation time: %f s", durationTime);
+  ROS_INFO("Data written to allan_variance.csv");
   return 0;
 }
