@@ -105,13 +105,13 @@ print(f"X Velocity Random Walk: {accel_wn_intercept_x: .5f} m/s/sqrt(s) {accel_w
 print(f"Y Velocity Random Walk: {accel_wn_intercept_y: .5f} m/s/sqrt(s) {accel_wn_intercept_y*60: .5f} m/s/sqrt(hr)")
 print(f"Z Velocity Random Walk: {accel_wn_intercept_z: .5f} m/s/sqrt(s) {accel_wn_intercept_z*60: .5f} m/s/sqrt(hr)")
 
-print(f"X Bias Instability: {accel_min_x: .5f} m/s^2 {accel_min_x*60*60: .5f} m/hr^2")
-print(f"Y Bias Instability: {accel_min_y: .5f} m/s^2 {accel_min_y*60*60: .5f} m/hr^2")
-print(f"Z Bias Instability: {accel_min_z: .5f} m/s^2 {accel_min_z*60*60: .5f} m/hr^2")
+print(f"X Bias Instability: {accel_min_x: .5f} m/s^2 {accel_min_x*60*60: .5f} m/s/hr")
+print(f"Y Bias Instability: {accel_min_y: .5f} m/s^2 {accel_min_y*60*60: .5f} m/s/hr")
+print(f"Z Bias Instability: {accel_min_z: .5f} m/s^2 {accel_min_z*60*60: .5f} m/s/hr")
 
-print(f"X Accel Random Walk: {accel_rr_intercept_x: .5f} m/s^2")
-print(f"Y Accel Random Walk: {accel_rr_intercept_y: .5f} m/s^2")
-print(f"Z Accel Random Walk: {accel_rr_intercept_z: .5f} m/s^2")
+print(f"X Accel Random Walk: {accel_rr_intercept_x: .5f} m/s^3/sqrt(s)")
+print(f"Y Accel Random Walk: {accel_rr_intercept_y: .5f} m/s^3/sqrt(s)")
+print(f"Z Accel Random Walk: {accel_rr_intercept_z: .5f} m/s^3/sqrt(s)")
 
 average_vrw = (accel_wn_intercept_x + accel_wn_intercept_y + accel_wn_intercept_z) / 3
 average_abi = (accel_rr_intercept_x + accel_rr_intercept_y + accel_rr_intercept_z) / 3
@@ -186,12 +186,12 @@ print(f"Y Angle Random Walk: {gyro_wn_intercept_y: .5f} deg/sqrt(s) {gyro_wn_int
 print(f"Z Angle Random Walk: {gyro_wn_intercept_z: .5f} deg/sqrt(s) {gyro_wn_intercept_z * 60: .5f} deg/sqrt(hr)")
 
 print(f"X Bias Instability: {gyro_min_x: .5f} deg/s {gyro_min_x*60*60: .5f} deg/hr")
-print(f"Y Bias Instability: {gyro_min_y: .5f} deg/s	{gyro_min_y*60*60: .5f} deg/hr")
-print(f"Z Bias Instability: {gyro_min_z: .5f} deg/s	{gyro_min_z*60*60: .5f} deg/hr")
+print(f"Y Bias Instability: {gyro_min_y: .5f} deg/s {gyro_min_y*60*60: .5f} deg/hr")
+print(f"Z Bias Instability: {gyro_min_z: .5f} deg/s {gyro_min_z*60*60: .5f} deg/hr")
 
-print(f"X Rate Random Walk: {gyro_rr_intercept_x: .5f} deg/s")
-print(f"Y Rate Random Walk: {gyro_rr_intercept_y: .5f} deg/s")
-print(f"Z Rate Random Walk: {gyro_rr_intercept_z: .5f} deg/s")
+print(f"X Rate Random Walk: {gyro_rr_intercept_x: .5f} deg/s^2/sqrt(s)")
+print(f"Y Rate Random Walk: {gyro_rr_intercept_y: .5f} deg/s^2/sqrt(s)")
+print(f"Z Rate Random Walk: {gyro_rr_intercept_z: .5f} deg/s^2/sqrt(s)")
 
 average_arw = (gyro_wn_intercept_x + gyro_wn_intercept_y + gyro_wn_intercept_z) / 3
 average_abi = (gyro_rr_intercept_x + gyro_rr_intercept_y + gyro_rr_intercept_z) / 3
