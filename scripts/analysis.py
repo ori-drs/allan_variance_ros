@@ -27,52 +27,46 @@ def get_intercept(x, y, m, b):
 
 	return yfit(b), yfit
 
+parser = argparse.ArgumentParser()
 
+parser.add_argument('--data', metavar='STR', type=str,
+					help='TUM data files to plot')
 
-if __name__ == "__main__":
+parser.add_argument("--skip", type=int, default=1)
 
-	parser = argparse.ArgumentParser()
+args = parser.parse_args()
 
-	parser.add_argument('--data', metavar='STR', type=str,
-						help='TUM data files to plot')
+line_count = 0
 
-	parser.add_argument("--skip", type=int, default=1)
+rostopic = "/sensors/imu"
+update_rate = 400.0
 
-	args = parser.parse_args()
+# Assumes tum format
 
-	line_count = 0
+period = np.array([])
+acceleration = np.empty((0,3), float)
+rotation_rate = np.empty((0,3), float)
 
-	rostopic = "/sensors/imu"
-	update_rate = 400.0
+with open(args.data) as input_file:
+	csv_reader = csv.reader(input_file, delimiter=' ')
 
+	first_row = True
+	counter = 0
 
+	for row in csv_reader:
+		# if(first_row):
+		# 	first_row = False
+		# 	continue
 
-	# Assumes tum format
+		counter = counter + 1
 
-	period = np.array([])
-	acceleration = np.empty((0,3), float)
-	rotation_rate = np.empty((0,3), float)
+		if (counter % args.skip != 0):
+			continue
 
-	with open(args.data) as input_file:
-		csv_reader = csv.reader(input_file, delimiter=' ')
-
-		first_row = True
-		counter = 0
-
-		for row in csv_reader:
-			# if(first_row):
-			# 	first_row = False
-			# 	continue
-
-			counter = counter + 1
-
-			if (counter % args.skip != 0):
-				continue
-
-			t = float(row[0])
-			period = np.append(period, [t], axis=0) 
-			acceleration = np.append(acceleration, np.array([float(row[1]), float(row[2]), float(row[3])]).reshape(1,3), axis=0)
-			rotation_rate = np.append(rotation_rate, np.array([float(row[4]), float(row[5]), float(row[6])]).reshape(1,3), axis=0)
+		t = float(row[0])
+		period = np.append(period, [t], axis=0)
+		acceleration = np.append(acceleration, np.array([float(row[1]), float(row[2]), float(row[3])]).reshape(1,3), axis=0)
+		rotation_rate = np.append(rotation_rate, np.array([float(row[4]), float(row[5]), float(row[6])]).reshape(1,3), axis=0)
 
 
 white_noise_break_point = np.where(period == 10)[0][0]
