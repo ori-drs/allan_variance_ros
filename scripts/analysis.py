@@ -6,15 +6,13 @@
 # @author Russell Buchanan
 # 
 
-import os
-import csv
 import argparse
-import numpy as np
-from scipy.spatial.transform import Rotation
-from numpy.linalg import inv
+import csv
+
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.optimize import curve_fit
+
 
 def line_func(x, m, b):
 	return m * x + b
