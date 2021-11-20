@@ -17,7 +17,7 @@ import numpy as np
 from scipy.optimize import curve_fit
 
 def line_func(x, m, b):
-  return m * x + b
+	return m * x + b
 
 def get_intercept(x, y, m, b):
 	
@@ -36,7 +36,7 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
 
 	parser.add_argument('--data', metavar='STR', type=str,
-                    help='TUM data files to plot')
+						help='TUM data files to plot')
 
 	parser.add_argument("--skip", type=int, default=1)
 
