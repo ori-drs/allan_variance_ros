@@ -4,7 +4,7 @@
 namespace allan_variance_ros {
 
 AllanVarianceComputor::AllanVarianceComputor(ros::NodeHandle& nh, std::string config_file, std::string output_path)
-    : nh_(nh), config_file_(config_file), skipped_imu_(0) {
+    : nh_(nh), config_file_(config_file), skipped_imu_(0), firstMsg_(true) {
   YAML::Node node = loadYamlFile(config_file);
 
   std::string imu_topic;
@@ -37,21 +37,27 @@ void AllanVarianceComputor::run(std::string bag_path) {
     bag.open(bag_path, rosbag::bagmode::Read);
     rosbag::View view(bag, rosbag::TopicQuery(input_topics_));
     BOOST_FOREACH (rosbag::MessageInstance const msg, view) {
-      imu_counter++;
-
-      // Subsample IMU measurements
-      if (imu_counter % imu_skip_ != 0 || imu_counter / imu_rate_ > sequence_time_) {
-        continue;
-      }
-
-      if (imu_counter % int(imu_rate_) * 10) {
-        ROS_INFO_STREAM(imu_counter / imu_rate_ << " / " << sequence_time_ << " seconds loaded");
-      }
-
       // Fill IMU buffer
       if (msg.isType<sensor_msgs::Imu>()) {
         sensor_msgs::ImuConstPtr imu_msg = msg.instantiate<sensor_msgs::Imu>();
         tCurrNanoSeconds_ = imu_msg->header.stamp.toNSec();
+
+        imu_counter++;
+
+        // Subsample IMU measurements
+        if (imu_counter % imu_skip_ != 0 || imu_counter / imu_rate_ > sequence_time_) {
+          continue;
+        }
+
+        if (imu_counter % int(imu_rate_) * 10) {
+          ROS_INFO_STREAM(imu_counter / imu_rate_ << " / " << sequence_time_ << " seconds loaded");
+        }
+
+        if (firstMsg_) {
+          firstMsg_ = false;
+          firstTime_ = tCurrNanoSeconds_;
+          lastImuTime_ = tCurrNanoSeconds_;
+        }
 
         if (tCurrNanoSeconds_ < lastImuTime_) {
           ROS_ERROR_STREAM("IMU message before last imu time. IMU time: "
