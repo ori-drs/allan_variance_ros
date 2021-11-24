@@ -87,5 +87,6 @@ class AllanVarianceComputor {
   uint64_t lastImuTime_;
   uint64_t firstTime_;
   EigenVector<ImuMeasurement> imuBuffer_;
+  bool firstMsg_;
 };
 }  // namespace allan_variance_ros
