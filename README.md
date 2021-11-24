@@ -41,9 +41,9 @@ ACCELEROMETER:
 X Velocity Random Walk:  0.00333 m/s/sqrt(s)  0.19983 m/s/sqrt(hr)
 Y Velocity Random Walk:  0.01079 m/s/sqrt(s)  0.64719 m/s/sqrt(hr)
 Z Velocity Random Walk:  0.00481 m/s/sqrt(s)  0.28846 m/s/sqrt(hr)
-X Bias Instability:  0.00055 m/s^2  1.99258 m/s/hr
-Y Bias Instability:  0.00153 m/s^2  5.51917 m/s/hr
-Z Bias Instability:  0.00052 m/s^2  1.86155 m/s/hr
+X Bias Instability:  0.00055 m/s^2  7173.28800 m/hr^2
+Y Bias Instability:  0.00153 m/s^2  19869.01200 m/hr^2
+Z Bias Instability:  0.00052 m/s^2  6701.58000 m/hr^2
 X Accel Random Walk:  0.00008 m/s^3/sqrt(s)
 Y Accel Random Walk:  0.00020 m/s^3/sqrt(s)
 Z Accel Random Walk:  0.00007 m/s^3/sqrt(s)
