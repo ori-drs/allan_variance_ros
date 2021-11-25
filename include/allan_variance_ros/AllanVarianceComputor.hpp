@@ -70,21 +70,21 @@ class AllanVarianceComputor {
   rosbag::Bag bag;
 
   // Data
-  AllanVarianceFormat aVRecorder_;
+  AllanVarianceFormat aVRecorder_{};
   std::ofstream av_output_;
   std::string imu_output_file_;
 
   // Config
-  int sequence_time_;
-  int measure_rate_;
+  int sequence_time_{};
+  int measure_rate_{};
   std::vector<std::string> input_topics_;
   double imu_rate_ = 100.0;
 
-  int skipped_imu_;
+  int skipped_imu_{};
   int imu_skip_;
-  uint64_t tCurrNanoSeconds_;
-  uint64_t lastImuTime_;
-  uint64_t firstTime_;
+  uint64_t tCurrNanoSeconds_{};
+  uint64_t lastImuTime_{};
+  uint64_t firstTime_{};
   EigenVector<ImuMeasurement> imuBuffer_;
   bool firstMsg_;
 };
