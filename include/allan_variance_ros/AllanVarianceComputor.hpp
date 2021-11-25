@@ -62,7 +62,7 @@ class AllanVarianceComputor {
   void run(std::string bag_path);
   void closeOutputs();
   void allanVariance();
-  void writeAllanDeviation(std::vector<float> variance, float period);
+  void writeAllanDeviation(std::vector<double> variance, double period);
 
  private:
   // ROS
