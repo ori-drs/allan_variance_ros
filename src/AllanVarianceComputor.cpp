@@ -4,7 +4,7 @@
 namespace allan_variance_ros {
 
 AllanVarianceComputor::AllanVarianceComputor(ros::NodeHandle& nh, std::string config_file, std::string output_path)
-    : nh_(nh), config_file_(config_file), skipped_imu_(0), firstMsg_(true) {
+    : nh_(nh), skipped_imu_(0), firstMsg_(true) {
   YAML::Node node = loadYamlFile(config_file);
 
   std::string imu_topic;
@@ -101,8 +101,6 @@ void AllanVarianceComputor::run(std::string bag_path) {
 void AllanVarianceComputor::closeOutputs() { av_output_.close(); }
 
 void AllanVarianceComputor::allanVariance() {
-  int sequence_length = imuBuffer_.size();
-
   std::vector<std::vector<float>> allan_variances;
 
   for (int period = 1; period < 10000; period++) {
@@ -110,9 +108,6 @@ void AllanVarianceComputor::allanVariance() {
     float period_time = period * 0.1;
 
     bool new_bin = true;
-    uint64_t current_time = 0;
-    uint64_t first_time = 0;
-    uint64_t window_start_time = 0;
     int bin_size = 0;
 
     std::vector<float> current_average = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
@@ -121,13 +116,9 @@ void AllanVarianceComputor::allanVariance() {
     for (const auto& measurement : imuBuffer_) {
       if (new_bin) {
         new_bin = false;
-        window_start_time = measurement.t;
-        first_time = window_start_time;
       }
 
       int max_bin_size = period_time * measure_rate_;
-
-      current_time = measurement.t;
 
       // Acceleration
       current_average[0] += measurement.I_a_WI[0];

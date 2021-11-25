@@ -75,7 +75,6 @@ class AllanVarianceComputor {
   std::string imu_output_file_;
 
   // Config
-  std::string config_file_;
   int sequence_time_;
   int measure_rate_;
   std::vector<std::string> input_topics_;
