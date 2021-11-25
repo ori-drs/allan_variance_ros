@@ -5,8 +5,6 @@
  */
 
 // std, eigen and boost
-#include <Eigen/Dense>
-#include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <ctime>
 #include <fstream>
