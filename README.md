@@ -44,9 +44,9 @@ Z Velocity Random Walk:  0.00481 m/s/sqrt(s)  0.28846 m/s/sqrt(hr)
 X Bias Instability:  0.00055 m/s^2  7173.28800 m/hr^2
 Y Bias Instability:  0.00153 m/s^2  19869.01200 m/hr^2
 Z Bias Instability:  0.00052 m/s^2  6701.58000 m/hr^2
-X Accel Random Walk:  0.00008 m/s^3/sqrt(s)
-Y Accel Random Walk:  0.00020 m/s^3/sqrt(s)
-Z Accel Random Walk:  0.00007 m/s^3/sqrt(s)
+X Accel Random Walk:  0.00008 m/s^2/sqrt(s)
+Y Accel Random Walk:  0.00020 m/s^2/sqrt(s)
+Z Accel Random Walk:  0.00007 m/s^2/sqrt(s)
 GYROSCOPE:
 X Angle Random Walk:  0.00787 deg/sqrt(s)  0.47215 deg/sqrt(hr)
 Y Angle Random Walk:  0.00987 deg/sqrt(s)  0.59204 deg/sqrt(hr)
@@ -54,9 +54,9 @@ Z Angle Random Walk:  0.00839 deg/sqrt(s)  0.50331 deg/sqrt(hr)
 X Bias Instability:  0.00049 deg/s  1.76568 deg/hr
 Y Bias Instability:  0.00136 deg/s  4.88153 deg/hr
 Z Bias Instability:  0.00088 deg/s  3.15431 deg/hr
-X Rate Random Walk:  0.00007 deg/s^2/sqrt(s)
-Y Rate Random Walk:  0.00028 deg/s^2/sqrt(s)
-Z Rate Random Walk:  0.00011 deg/s^2/sqrt(s)
+X Rate Random Walk:  0.00007 deg/s/sqrt(s)
+Y Rate Random Walk:  0.00028 deg/s/sqrt(s)
+Z Rate Random Walk:  0.00011 deg/s/sqrt(s)
 
 ```
 

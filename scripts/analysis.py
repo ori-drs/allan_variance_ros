@@ -117,9 +117,9 @@ print(f"X Bias Instability: {accel_min_x: .5f} m/s^2 {accel_min_x*3600*3600: .5f
 print(f"Y Bias Instability: {accel_min_y: .5f} m/s^2 {accel_min_y*3600*3600: .5f} m/hr^2")
 print(f"Z Bias Instability: {accel_min_z: .5f} m/s^2 {accel_min_z*3600*3600: .5f} m/hr^2")
 
-print(f"X Accel Random Walk: {accel_rr_intercept_x: .5f} m/s^3/sqrt(s)")
-print(f"Y Accel Random Walk: {accel_rr_intercept_y: .5f} m/s^3/sqrt(s)")
-print(f"Z Accel Random Walk: {accel_rr_intercept_z: .5f} m/s^3/sqrt(s)")
+print(f"X Accel Random Walk: {accel_rr_intercept_x: .5f} m/s^2/sqrt(s)")
+print(f"Y Accel Random Walk: {accel_rr_intercept_y: .5f} m/s^2/sqrt(s)")
+print(f"Z Accel Random Walk: {accel_rr_intercept_z: .5f} m/s^2/sqrt(s)")
 
 average_acc_white_noise = (accel_wn_intercept_x + accel_wn_intercept_y + accel_wn_intercept_z) / 3
 average_acc_bias_instability = (accel_min_x + accel_min_y + accel_min_z) / 3
@@ -202,9 +202,9 @@ print(f"X Bias Instability: {gyro_min_x: .5f} deg/s {gyro_min_x*60*60: .5f} deg/
 print(f"Y Bias Instability: {gyro_min_y: .5f} deg/s {gyro_min_y*60*60: .5f} deg/hr")
 print(f"Z Bias Instability: {gyro_min_z: .5f} deg/s {gyro_min_z*60*60: .5f} deg/hr")
 
-print(f"X Rate Random Walk: {gyro_rr_intercept_x: .5f} deg/s^2/sqrt(s)")
-print(f"Y Rate Random Walk: {gyro_rr_intercept_y: .5f} deg/s^2/sqrt(s)")
-print(f"Z Rate Random Walk: {gyro_rr_intercept_z: .5f} deg/s^2/sqrt(s)")
+print(f"X Rate Random Walk: {gyro_rr_intercept_x: .5f} deg/s/sqrt(s)")
+print(f"Y Rate Random Walk: {gyro_rr_intercept_y: .5f} deg/s/sqrt(s)")
+print(f"Z Rate Random Walk: {gyro_rr_intercept_z: .5f} deg/s/sqrt(s)")
 
 average_gyro_white_noise = (gyro_wn_intercept_x + gyro_wn_intercept_y + gyro_wn_intercept_z) / 3
 average_gyro_bias_instability = (gyro_min_x + gyro_min_y + gyro_min_z) / 3
