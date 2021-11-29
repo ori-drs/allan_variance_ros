@@ -4,7 +4,7 @@
 namespace allan_variance_ros {
 
 AllanVarianceComputor::AllanVarianceComputor(ros::NodeHandle& nh, std::string config_file, std::string output_path)
-    : nh_(nh), config_file_(config_file), skipped_imu_(0), firstMsg_(true) {
+    : nh_(nh), firstMsg_(true) {
   YAML::Node node = loadYamlFile(config_file);
 
   std::string imu_topic;
@@ -101,33 +101,24 @@ void AllanVarianceComputor::run(std::string bag_path) {
 void AllanVarianceComputor::closeOutputs() { av_output_.close(); }
 
 void AllanVarianceComputor::allanVariance() {
-  int sequence_length = imuBuffer_.size();
-
-  std::vector<std::vector<float>> allan_variances;
+  std::vector<std::vector<double>> allan_variances;
 
   for (int period = 1; period < 10000; period++) {
-    std::vector<std::vector<float>> averages;
-    float period_time = period * 0.1;
+    std::vector<std::vector<double>> averages;
+    double period_time = period * 0.1;
 
     bool new_bin = true;
-    uint64_t current_time = 0;
-    uint64_t first_time = 0;
-    uint64_t window_start_time = 0;
     int bin_size = 0;
 
-    std::vector<float> current_average = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    std::vector<double> current_average = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
     // Compute Averages
     for (const auto& measurement : imuBuffer_) {
       if (new_bin) {
         new_bin = false;
-        window_start_time = measurement.t;
-        first_time = window_start_time;
       }
 
       int max_bin_size = period_time * measure_rate_;
-
-      current_time = measurement.t;
 
       // Acceleration
       current_average[0] += measurement.I_a_WI[0];
@@ -162,7 +153,7 @@ void AllanVarianceComputor::allanVariance() {
 
     // Compute Allan Variance
 
-    std::vector<float> allan_variance = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    std::vector<double> allan_variance = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     for (int k = 0; k < num_averages - 1; k++) {
       allan_variance[0] += std::pow(averages[k + 1][0] - averages[k][0], 2);
       allan_variance[1] += std::pow(averages[k + 1][1] - averages[k][1], 2);
@@ -171,12 +162,12 @@ void AllanVarianceComputor::allanVariance() {
       allan_variance[4] += std::pow(averages[k + 1][4] - averages[k][4], 2);
       allan_variance[5] += std::pow(averages[k + 1][5] - averages[k][5], 2);
     }
-    std::vector<float> avar = {
+    std::vector<double> avar = {
         allan_variance[0] / (2 * (num_averages - 1)), allan_variance[1] / (2 * (num_averages - 1)),
         allan_variance[2] / (2 * (num_averages - 1)), allan_variance[3] / (2 * (num_averages - 1)),
         allan_variance[4] / (2 * (num_averages - 1)), allan_variance[5] / (2 * (num_averages - 1))};
 
-    std::vector<float> allan_deviation = {std::sqrt(avar[0]), std::sqrt(avar[1]), std::sqrt(avar[2]),
+    std::vector<double> allan_deviation = {std::sqrt(avar[0]), std::sqrt(avar[1]), std::sqrt(avar[2]),
                                           std::sqrt(avar[3]), std::sqrt(avar[4]), std::sqrt(avar[5])};
 
     writeAllanDeviation(allan_deviation, period_time);
@@ -189,7 +180,7 @@ void AllanVarianceComputor::allanVariance() {
   }
 }
 
-void AllanVarianceComputor::writeAllanDeviation(std::vector<float> variance, float period) {
+void AllanVarianceComputor::writeAllanDeviation(std::vector<double> variance, double period) {
   aVRecorder_.period = period;
   aVRecorder_.accX = variance[0];
   aVRecorder_.accY = variance[1];

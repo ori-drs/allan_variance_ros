@@ -11,7 +11,7 @@ class ImuMeasurement{
 public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  uint64_t t;       ///< ROS time message received (nanoseconds).
+  uint64_t t{};       ///< ROS time message received (nanoseconds).
 
   Eigen::Vector3d I_a_WI;  ///< Raw acceleration from the IMU (m/s/s)
   Eigen::Vector3d I_w_WI;  ///< Raw angular velocity from the IMU (deg/s)

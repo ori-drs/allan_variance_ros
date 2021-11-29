@@ -62,7 +62,7 @@ class AllanVarianceComputor {
   void run(std::string bag_path);
   void closeOutputs();
   void allanVariance();
-  void writeAllanDeviation(std::vector<float> variance, float period);
+  void writeAllanDeviation(std::vector<double> variance, double period);
 
  private:
   // ROS
@@ -70,22 +70,21 @@ class AllanVarianceComputor {
   rosbag::Bag bag;
 
   // Data
-  AllanVarianceFormat aVRecorder_;
+  AllanVarianceFormat aVRecorder_{};
   std::ofstream av_output_;
   std::string imu_output_file_;
 
   // Config
-  std::string config_file_;
-  int sequence_time_;
-  int measure_rate_;
+  int sequence_time_{};
+  int measure_rate_{};
   std::vector<std::string> input_topics_;
   double imu_rate_ = 100.0;
 
-  int skipped_imu_;
+  int skipped_imu_{};
   int imu_skip_;
-  uint64_t tCurrNanoSeconds_;
-  uint64_t lastImuTime_;
-  uint64_t firstTime_;
+  uint64_t tCurrNanoSeconds_{};
+  uint64_t lastImuTime_{};
+  uint64_t firstTime_{};
   EigenVector<ImuMeasurement> imuBuffer_;
   bool firstMsg_;
 };

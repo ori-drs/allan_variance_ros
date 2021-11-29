@@ -1,5 +1,4 @@
 #include "allan_variance_ros/yaml_parsers.hpp"
-#include <boost/filesystem.hpp>
 #include <ros/console.h>
 #include <yaml-cpp/node/parse.h>
 

@@ -5,8 +5,6 @@
  */
 
 // std, eigen and boost
-#include <Eigen/Dense>
-#include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <ctime>
 #include <fstream>
@@ -22,7 +20,7 @@ int main(int argc, char** argv) {
   ros::init(argc, argv, "allan_variance_ros");
   ros::NodeHandle n("~");
   std::string bags_folder = ".";
-  std::string config_file = "";
+  std::string config_file;
 
   if (argc >= 2) {
     bags_folder = argv[1];
