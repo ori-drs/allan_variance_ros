@@ -48,6 +48,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--data', metavar='STR', type=str,
 					help='TUM data files to plot')
 
+parser.add_argument('--config', metavar='STR', type=str,
+					help='yaml config file')
+
 parser.add_argument("--skip", type=int, default=1)
 
 args = parser.parse_args()
@@ -56,6 +59,12 @@ line_count = 0
 
 rostopic = "/sensors/imu"
 update_rate = 400.0
+if args.config:
+	import yaml #pip install pyyaml
+	with open(args.config, "r") as stream:
+		config = yaml.safe_load(stream)
+	rostopic = config["imu_topic"]
+	update_rate = config["imu_rate"]
 
 # Assumes tum format
 
@@ -215,8 +224,13 @@ yaml_file.write("gyroscope_noise_density: " + repr(average_gyro_white_noise * np
 yaml_file.write("gyroscope_random_walk: " + repr(average_acc_random_walk * np.pi / 180) + " \n")
 yaml_file.write("\n")
 
-yaml_file.write("rostopic: " + repr(rostopic) + " #Make sure this is correct\n")
-yaml_file.write("update_rate: " + repr(update_rate) + " #Make sure this is correct\n")
+
+if args.config:
+	yaml_file.write("rostopic: " + repr(rostopic) + " \n")
+	yaml_file.write("update_rate: " + repr(update_rate) + " \n")
+else:
+	yaml_file.write("rostopic: " + repr(rostopic) + " #Make sure this is correct\n")
+	yaml_file.write("update_rate: " + repr(update_rate) + " #Make sure this is correct\n")
 yaml_file.write("\n")
 yaml_file.close()
 

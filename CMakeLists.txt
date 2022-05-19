@@ -26,8 +26,8 @@ catkin_package(
 
 include_directories(
   include
-  SYSTEM ${EIGEN3_INCLUDE_DIRS}
-  SYSTEM ${catkin_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS}
 )
 
 add_library(${PROJECT_NAME} SHARED
