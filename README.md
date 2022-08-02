@@ -16,7 +16,7 @@ Build the package:
 
 Run the Allan Variance computation tool:
 
-``rosrun allan_variance_ros allan_variance [path_to_rosbags] [path_to_config_file]``
+``rosrun allan_variance_ros allan_variance [path_to_folder_containing_bag] [path_to_config_file]``
 
 This will compute the Allan Deviation for the IMU and generate a CSV. The next step is to visualize the plots and get parameters. For this run:
 
