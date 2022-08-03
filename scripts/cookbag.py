@@ -11,7 +11,7 @@ parser.add_argument("--output", type=str, default=None)
 
 args = parser.parse_args()
 
-with rosbag.Bag(args.output, 'w') as outbag:
+with rosbag.Bag(args.output, 'w', compression='lz4') as outbag:
     for topic, msg, t in rosbag.Bag(args.input).read_messages():
         # This also replaces tf timestamps under the assumption 
         # that all transforms in the message share the same timestamp

@@ -221,7 +221,7 @@ average_gyro_random_walk = (gyro_rr_intercept_x + gyro_rr_intercept_y + gyro_rr_
 
 yaml_file.write("#Gyroscope\n")
 yaml_file.write("gyroscope_noise_density: " + repr(average_gyro_white_noise * np.pi / 180) + " \n")
-yaml_file.write("gyroscope_random_walk: " + repr(average_acc_random_walk * np.pi / 180) + " \n")
+yaml_file.write("gyroscope_random_walk: " + repr(average_gyro_random_walk * np.pi / 180) + " \n")
 yaml_file.write("\n")
 
 
