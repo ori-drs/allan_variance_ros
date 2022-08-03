@@ -1,36 +1,42 @@
 # Allan Variance ROS
 ## ROS package which loads a rosbag of IMU data and computes Allan Variance parameters
-The purpose of this tool is to read a long sequence of IMU data and return the Angle Random Walk (ARW), Bias Instability and Random Walk for the gyroscope as well as Velocity Random Walk (VRW), Bias Instability and Random Walk for the accelerometer.
+The purpose of this tool is to read a long sequence of IMU data and compute the Angle Random Walk (ARW), Bias Instability and Gyro Random Walk for the gyroscope as well as Velocity Random Walk (VRW), Bias Instability and Accel Random Walk for the accelerometer.
+
+While there are many open source tools which do the same thing, this package has the following features:
+
+- Fully ROS compatable. Simply record a `rosbag` and provide it as input. No conversion required.
+- Written in C++ making use of rosbag::View means the `rosbag` is processed at maximum speed. No need to play back the bag file.
+- Designed for [Kalibr](https://github.com/ethz-asl/kalibr). Will produce an `imu.yaml` file.
 
 This tool is designed for Ubuntu 20.04. Attemping to use on another distro or version may require some code changes.
 
-### How to use
-
-Build the package:
+## How to build
 
 ``catkin build  allan_variance_ros``
 
-**Recommended:** Reorganize ROS messages by timestamp using ROS Cookbook:
+## How to use
 
-``rosrun allan_variance_ros cookbag.py --input original_rosbag --output cooked_rosbag``
+1. Place your IMU on some damped surface and record your IMU data to a rosbag. You must record **at least** 3 hours of data. The longer the sequence, the more accurate the results.
 
-Run the Allan Variance computation tool:
+2. **Recommended** Reorganize ROS messages by timestamp:
 
-``rosrun allan_variance_ros allan_variance [path_to_folder_containing_bag] [path_to_config_file]``
+  ``rosrun allan_variance_ros cookbag.py --input original_rosbag --output cooked_rosbag``
 
-This will compute the Allan Deviation for the IMU and generate a CSV. The next step is to visualize the plots and get parameters. For this run:
+3. Run the Allan Variance computation tool (example config files provided):
 
-``rosrun allan_variance_ros analysis.py --data allan_variance.csv``
+  ``rosrun allan_variance_ros allan_variance [path_to_folder_containing_bag] [path_to_config_file]``
 
-Press `space` to go to next figure.
+4. This will compute the Allan Deviation for the IMU and generate a CSV. The next step is to visualize the plots and get parameters. For this run:
 
-### How to collect sequence
+  ``rosrun allan_variance_ros analysis.py --data allan_variance.csv``
 
-Place your IMU on some damped surface and record your IMU data to a rosbag. You must record **at least** 3 hours of data. The longer the sequence, the more accurate the results.
+  Press `space` to go to next figure.
+
+
 
 ### Example Log
 
-3 hour log of [Realsense D435i IMU](https://drive.google.com/file/d/1ovI2NvYR52Axt-KuRs5HjVk7-57ky72H/view?usp=sharing) already "cooked".
+3 hour log of [Realsense D435i IMU](https://drive.google.com/file/d/1ovI2NvYR52Axt-KuRs5HjVk7-57ky72H/view?usp=sharing) with timestamps already re-arranged.
 
 ![Acceleration](/figs/realsense_acceleration.png)
 ![Gyroscope](/figs/realsense_gyro.png)
@@ -61,7 +67,7 @@ Z Rate Random Walk:  0.00011 deg/s/sqrt(s)
 
 ```
 
-### Kalibr
+## Kalibr
 
 [Kalibr](https://github.com/ethz-asl/kalibr) is a useful collection of tools for calibrating cameras and IMUs. For IMU calibration it needs the noise parameters of the IMU generated in a yaml file. `allan_variance_ros` automatically generates this file file as `imu.yaml`:
 
@@ -78,8 +84,12 @@ rostopic: '/sensors/imu' #Make sure this is correct
 update_rate: 400.0 #Make sure this is correct
 
 ```
+## Author
 
-### References
+[Russell Buchanan](https://raabuchanan.com/)
+
+
+## References
 
 - [Indirect Kalman Filter for 3D Attitude Estimation, Trawny & Roumeliotis](http://mars.cs.umn.edu/tr/reports/Trawny05b.pdf)
 - [An introduction to inertial navigation, Oliver Woodman](https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-696.pdf) 
