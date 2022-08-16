@@ -7,6 +7,8 @@
 #include <rosbag/view.h>
 #include <sensor_msgs/Imu.h>
 
+#include <mutex>
+
 // allan_variance_ros
 #include "allan_variance_ros/ImuMeasurement.hpp"
 #include "allan_variance_ros/yaml_parsers.hpp"
@@ -67,7 +69,6 @@ class AllanVarianceComputor {
  private:
   // ROS
   ros::NodeHandle& nh_;
-  rosbag::Bag bag;
 
   // Data
   AllanVarianceFormat aVRecorder_{};
