@@ -1,12 +1,12 @@
 #Accelerometer
 accelerometer_noise_density: 0.0025019929573561175 
 accelerometer_random_walk: 6.972435158192731e-05
-accelerometer_bias: 0.007
+accelerometer_bias_init: 0.007
 
 #Gyroscope
 gyroscope_noise_density: 0.0001888339269965301 
 gyroscope_random_walk: 2.5565313322052523e-06
-gyroscope_bias: 0.006
+gyroscope_bias_init: 0.006
 
 rostopic: '/sensors/imu'
 update_rate: 400.0
