@@ -120,9 +120,13 @@ void AllanVarianceComputor::allanVariance() {
   bool stop_early = false;
   std::map<int,std::vector<std::vector<double>>> averages_map;
 
+  // Range we will sample from (0.1s to 1000s)
+  int period_min = 1;
+  int period_max = 10000;
+
   // Overlapping method
   #pragma omp parallel for
-  for (int period = 1; period < 10000; period++) {
+  for (int period = period_min; period < period_max; period++) {
 
     if (!nh_.ok() || stop_early) {
       stop_early = true;
@@ -130,9 +134,7 @@ void AllanVarianceComputor::allanVariance() {
     }
 
     std::vector<std::vector<double>> averages;
-    double period_time = period * 0.1;  // Sampling periods from 0.1s to 1000s
-
-    int bin_size = 0;
+    double period_time = period * 0.1; // Sampling periods from 0.1s to 1000s
 
     int max_bin_size = period_time * measure_rate_;
     int overlap = floor(max_bin_size * overlap_);
@@ -140,7 +142,7 @@ void AllanVarianceComputor::allanVariance() {
     std::vector<double> current_average = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
     // Compute Averages
-    for (int j = 0; j < (imuBuffer_.size() - max_bin_size); j += (max_bin_size - overlap)) {
+    for (int j = 0; j < ((int)imuBuffer_.size() - max_bin_size); j += (max_bin_size - overlap)) {
       // get average for current bin
       for (int m = 0; m < max_bin_size; m++) {
         // ROS_INFO_STREAM("j + m: " << j + m);
@@ -183,10 +185,10 @@ void AllanVarianceComputor::allanVariance() {
 
 
   std::vector<std::vector<double>> allan_variances;
-  for (int period = 1; period < 10000; period++) {
+  for (int period = period_min; period < period_max; period++) {
 
     std::vector<std::vector<double>> averages = averages_map.at(period);
-    double period_time = period * 0.1;
+    double period_time = period * 0.1; // Sampling periods from 0.1s to 1000s
     int num_averages = averages.size();
     ROS_INFO_STREAM("Computed " << num_averages << " bins for sampling period " << period_time << " out of "
                                 << imuBuffer_.size() << " measurements.");
