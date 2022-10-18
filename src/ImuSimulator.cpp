@@ -1,5 +1,5 @@
 /**
- * @file   ImuImulator.cpp
+ * @file   ImuSimulator.cpp
  * @brief  Tool to simulate imu data, ref:
  * https://github.com/ethz-asl/kalibr/wiki/IMU-Noise-Model.
  * @author Rick Liu
@@ -121,7 +121,8 @@ int main(int argc, char **argv) {
     ROS_INFO_STREAM("Bag filename = " << rosbag_filename);
     ROS_INFO_STREAM("Config File = " << config_file);
   } else {
-    ROS_WARN("Rosbag filename and/or config file not provided!");
+    ROS_WARN("Usage: ./imu_simulator /path/to/output/bag_filename /path/to/simulation/config_filename");
+    return 1;
   }
 
   auto start = std::clock();

@@ -43,3 +43,7 @@ add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} ${${PROJECT_NAME}_EX
 add_executable(allan_variance src/allan_variance.cpp)
 
 target_link_libraries(allan_variance ${PROJECT_NAME} )
+
+add_executable(imu_simulator src/ImuSimulator.cpp)
+
+target_link_libraries(imu_simulator ${PROJECT_NAME} )
