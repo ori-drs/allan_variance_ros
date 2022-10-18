@@ -62,7 +62,7 @@ public:
     double dt = 1 / update_rate_;
 
     // clang-format off
-    ros::Time start_time = ros::Time::now();
+    ros::Time start_time(1.0);
     Vec3d accelerometer_bias = Vec3d::Constant(accelerometer_bias_init_);
     Vec3d gyroscope_bias = Vec3d::Constant(gyroscope_bias_init_);
     Vec3d accelerometer_real = Vec3d::Zero();
