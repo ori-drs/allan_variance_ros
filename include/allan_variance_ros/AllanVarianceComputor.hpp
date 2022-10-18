@@ -88,5 +88,6 @@ class AllanVarianceComputor {
   uint64_t firstTime_{};
   EigenVector<ImuMeasurement> imuBuffer_;
   bool firstMsg_;
+  float overlap_; // Percent to overlap bins
 };
 }  // namespace allan_variance_ros

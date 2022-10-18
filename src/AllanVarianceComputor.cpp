@@ -4,7 +4,7 @@
 namespace allan_variance_ros {
 
 AllanVarianceComputor::AllanVarianceComputor(ros::NodeHandle& nh, std::string config_file, std::string output_path)
-    : nh_(nh), firstMsg_(true) {
+    : nh_(nh), firstMsg_(true), overlap_(0.5) {
   YAML::Node node = loadYamlFile(config_file);
 
   std::string imu_topic;
@@ -120,6 +120,7 @@ void AllanVarianceComputor::allanVariance() {
   bool stop_early = false;
   std::map<int,std::vector<std::vector<double>>> averages_map;
 
+  // Overlapping method
   #pragma omp parallel for
   for (int period = 1; period < 10000; period++) {
 
@@ -129,42 +130,40 @@ void AllanVarianceComputor::allanVariance() {
     }
 
     std::vector<std::vector<double>> averages;
-    double period_time = period * 0.1;
+    double period_time = period * 0.1;  // Sampling periods from 0.1s to 1000s
 
     int bin_size = 0;
+
+    int max_bin_size = period_time * measure_rate_;
+    int overlap = floor(max_bin_size * overlap_);
 
     std::vector<double> current_average = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
     // Compute Averages
-    for (const auto& measurement : imuBuffer_) {
+    for (int j = 0; j < (imuBuffer_.size() - max_bin_size); j += (max_bin_size - overlap)) {
+      // get average for current bin
+      for (int m = 0; m < max_bin_size; m++) {
+        // ROS_INFO_STREAM("j + m: " << j + m);
+        // // Acceleration
+        current_average[0] += imuBuffer_[j + m].I_a_WI[0];
+        current_average[1] += imuBuffer_[j + m].I_a_WI[1];
+        current_average[2] += imuBuffer_[j + m].I_a_WI[2];
 
-      int max_bin_size = period_time * measure_rate_;
-
-      // Acceleration
-      current_average[0] += measurement.I_a_WI[0];
-      current_average[1] += measurement.I_a_WI[1];
-      current_average[2] += measurement.I_a_WI[2];
-
-      // Gyro
-      current_average[3] += measurement.I_w_WI[0] * 180 / M_PI;
-      current_average[4] += measurement.I_w_WI[1] * 180 / M_PI;
-      current_average[5] += measurement.I_w_WI[2] * 180 / M_PI;
-
-      bin_size++;
-
-      // new window
-      if (bin_size >= max_bin_size) {
-        current_average[0] /= bin_size;
-        current_average[1] /= bin_size;
-        current_average[2] /= bin_size;
-        current_average[3] /= bin_size;
-        current_average[4] /= bin_size;
-        current_average[5] /= bin_size;
-
-        averages.push_back(current_average);
-        current_average = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-        bin_size = 0;
+        // Gyro - assumes measurements in radians and convert to degrees
+        current_average[3] += imuBuffer_[j + m].I_w_WI[0] * 180 / M_PI;
+        current_average[4] += imuBuffer_[j + m].I_w_WI[1] * 180 / M_PI;
+        current_average[5] += imuBuffer_[j + m].I_w_WI[2] * 180 / M_PI;
       }
+
+      current_average[0] /= max_bin_size;
+      current_average[1] /= max_bin_size;
+      current_average[2] /= max_bin_size;
+      current_average[3] /= max_bin_size;
+      current_average[4] /= max_bin_size;
+      current_average[5] /= max_bin_size;
+
+      averages.push_back(current_average);
+      current_average = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     }
 
 
@@ -189,6 +188,8 @@ void AllanVarianceComputor::allanVariance() {
     std::vector<std::vector<double>> averages = averages_map.at(period);
     double period_time = period * 0.1;
     int num_averages = averages.size();
+    ROS_INFO_STREAM("Computed " << num_averages << " bins for sampling period " << period_time << " out of "
+                                << imuBuffer_.size() << " measurements.");
 
     // Compute Allan Variance
     std::vector<double> allan_variance = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
@@ -206,7 +207,7 @@ void AllanVarianceComputor::allanVariance() {
         allan_variance[4] / (2 * (num_averages - 1)), allan_variance[5] / (2 * (num_averages - 1))};
 
     std::vector<double> allan_deviation = {std::sqrt(avar[0]), std::sqrt(avar[1]), std::sqrt(avar[2]),
-                                          std::sqrt(avar[3]), std::sqrt(avar[4]), std::sqrt(avar[5])};
+                                           std::sqrt(avar[3]), std::sqrt(avar[4]), std::sqrt(avar[5])};
 
     writeAllanDeviation(allan_deviation, period_time);
 
