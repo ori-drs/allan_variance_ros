@@ -102,6 +102,8 @@ void AllanVarianceComputor::run(std::string bag_path) {
     ROS_WARN_STREAM("Captured rosbag::BagIOException " << e.what());
   } catch (rosbag::BagUnindexedException &e) {
     ROS_WARN_STREAM("Captured rosbag::BagUnindexedException " << e.what());
+  } catch (std::exception &e) {
+    ROS_ERROR_STREAM(e.what());
   } catch (...) {
     ROS_ERROR("Captured unknown exception");
   }
@@ -109,7 +111,11 @@ void AllanVarianceComputor::run(std::string bag_path) {
   ROS_INFO_STREAM("Finished collecting data. " << imuBuffer_.size() << " measurements");
 
   // Compute Allan Variance here
-  allanVariance();
+  if(!imuBuffer_.empty()) {
+    allanVariance();
+  } else {
+    ROS_ERROR("No IMU messages to process, is your topic right?");
+  }
 }
 
 void AllanVarianceComputor::closeOutputs() { av_output_.close(); }
