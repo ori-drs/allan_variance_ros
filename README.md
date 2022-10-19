@@ -100,7 +100,7 @@ A simulation config file is provided in `allan_variance_ros/config/simulation/im
 
 A config file is provided in `allan_variance_ros/config/sim.yaml`
 
-As shown in PR #24 accuracy is quite good.
+As shown in PR https://github.com/ori-drs/allan_variance_ros/pull/24 accuracy is quite good.
 
 
 ## Author
