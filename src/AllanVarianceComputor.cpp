@@ -4,7 +4,7 @@
 namespace allan_variance_ros {
 
 AllanVarianceComputor::AllanVarianceComputor(ros::NodeHandle& nh, std::string config_file, std::string output_path)
-    : nh_(nh), firstMsg_(true), overlap_(0.5) {
+    : nh_(nh), firstMsg_(true), overlap_(0.0) {
   YAML::Node node = loadYamlFile(config_file);
 
   std::string imu_topic;
