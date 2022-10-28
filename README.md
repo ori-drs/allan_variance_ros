@@ -8,7 +8,7 @@ While there are many open source tools which do the same thing, this package has
 - Written in C++ making use of rosbag::View means the `rosbag` is processed at maximum speed. No need to play back the bag file.
 - Designed for [Kalibr](https://github.com/ethz-asl/kalibr). Will produce an `imu.yaml` file.
 
-This tool is designed for Ubuntu 20.04. Attemping to use on another distro or version may require some code changes.
+This tool is designed for Ubuntu 20.04. Attempting to use on another distro or version may require some code changes.
 
 ## How to build
 
@@ -86,7 +86,9 @@ update_rate: 400.0 #Make sure this is correct
 ```
 ## IMU Noise Simulation for Allan Variance ROS Evaluation
 
-Thanks to @kekeliu-whu who contributed an IMU noise simulator is based on the [Kalibr IMU noise model](https://github.com/ethz-asl/kalibr/wiki/IMU-Noise-Model). You can generate a rosbag of simulated IMU noise and run allan_variance_ros to verify the tool is working.
+Thanks to [@kekeliu-whu](https://github.com/kekeliu-whu) who contributed an IMU noise simulator is based on the [Kalibr IMU noise model](https://github.com/ethz-asl/kalibr/wiki/IMU-Noise-Model). You can generate a rosbag of simulated IMU noise and run allan_variance_ros to verify the tool is working.
+As shown in PR https://github.com/ori-drs/allan_variance_ros/pull/24 accuracy is quite good.
+
 
 ### To generate simulated noise
 
@@ -100,8 +102,6 @@ A simulation config file is provided in `allan_variance_ros/config/simulation/im
 
 A config file is provided in `allan_variance_ros/config/sim.yaml`
 
-As shown in PR https://github.com/ori-drs/allan_variance_ros/pull/24 accuracy is quite good.
-
 
 ## Author
 
@@ -113,3 +113,4 @@ As shown in PR https://github.com/ori-drs/allan_variance_ros/pull/24 accuracy is
 - [Indirect Kalman Filter for 3D Attitude Estimation, Trawny & Roumeliotis](http://mars.cs.umn.edu/tr/reports/Trawny05b.pdf)
 - [An introduction to inertial navigation, Oliver Woodman](https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-696.pdf) 
 - [Characterization of Errors and Noises in MEMS Inertial Sensors Using Allan Variance Method, Leslie Barreda Pupo](https://upcommons.upc.edu/bitstream/handle/2117/103849/MScLeslieB.pdf?sequence=1&isAllowed=y)
+- [Kalibr IMU Noise Documentation](https://github.com/ethz-asl/kalibr/wiki/IMU-Noise-Model)

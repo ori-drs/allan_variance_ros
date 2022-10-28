@@ -50,14 +50,17 @@ public:
     get(yaml_config, "gyroscope_bias_init", gyroscope_bias_init_);
 
     get(yaml_config, "rostopic", rostopic_);
+    ROS_INFO_STREAM("rostopic: " << rostopic_);
     get(yaml_config, "update_rate", update_rate_);
+    ROS_INFO_STREAM("update_rate: " << update_rate_);
     get(yaml_config, "sequence_time", sequence_time_);
+    ROS_INFO_STREAM("sequence_time: " << sequence_time_);
   }
 
   virtual ~ImuSimulator() { bag_output_.close(); }
 
   void run() {
-    ROS_INFO_STREAM("Generating imu data ...");
+    ROS_INFO_STREAM("Generating IMU data ...");
 
     double dt = 1 / update_rate_;
 
@@ -70,6 +73,12 @@ public:
 
 
     for (int64_t i = 0; i < sequence_time_ * update_rate_; ++i) {
+
+      // Break if requested by user
+      if (!ros::ok()) {
+        break;
+      }
+
       // Reference: https://github.com/ethz-asl/kalibr/wiki/IMU-Noise-Model
       accelerometer_bias += RandomNormalDistributionVector(accelerometer_random_walk_) * sqrt(dt);
       gyroscope_bias += RandomNormalDistributionVector(gyroscope_random_walk_) * sqrt(dt);
@@ -128,7 +137,7 @@ int main(int argc, char **argv) {
   auto start = std::clock();
 
   ImuSimulator simulator(config_file, rosbag_filename);
-  ROS_INFO_STREAM("Imu simulator constructed");
+  ROS_INFO_STREAM("IMU simulator constructed");
   simulator.run();
 
   double durationTime = (std::clock() - start) / (double)CLOCKS_PER_SEC;
