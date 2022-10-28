@@ -84,7 +84,9 @@ rostopic: '/sensors/imu' #Make sure this is correct
 update_rate: 400.0 #Make sure this is correct
 
 ```
-## IMU Noise Simulation for Allan Variance ROS Evaluation
+## Allan Variance ROS Evaluation
+
+### IMU Noise Simulator
 
 Thanks to [@kekeliu-whu](https://github.com/kekeliu-whu) who contributed an IMU noise simulator is based on the [Kalibr IMU noise model](https://github.com/ethz-asl/kalibr/wiki/IMU-Noise-Model). You can generate a rosbag of simulated IMU noise and run allan_variance_ros to verify the tool is working.
 As shown in PR https://github.com/ori-drs/allan_variance_ros/pull/24 accuracy is quite good.
@@ -102,6 +104,9 @@ A simulation config file is provided in `allan_variance_ros/config/simulation/im
 
 A config file is provided in `allan_variance_ros/config/sim.yaml`
 
+### Additional Example bags
+
+Some additional rosbags of real IMU data for different sensors is available [here](https://drive.google.com/drive/folders/1a3Es85JDKl7tSpVWEUZryOwtsXB8793o). Thanks to Patrick Geneva.
 
 ## Author
 
