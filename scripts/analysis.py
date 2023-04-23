@@ -188,7 +188,7 @@ plt.pause(1)
 w = plt.waitforbuttonpress(timeout=5)
 plt.close()
 
-fig1.savefig('acceleration.png', dpi=600, bbox_inches = "tight")
+fig1.savefig('acceleration.svg', dpi=600, bbox_inches = "tight")
 
 gyro_wn_intercept_x, xfit_wn = get_intercept(period[0:white_noise_break_point], rotation_rate[0:white_noise_break_point,0], -0.5, 1.0)
 gyro_wn_intercept_y, yfit_wn = get_intercept(period[0:white_noise_break_point], rotation_rate[0:white_noise_break_point,1], -0.5, 1.0)
@@ -286,7 +286,7 @@ plt.pause(1)
 w = plt.waitforbuttonpress(timeout=5)
 plt.close()
 
-fig2.savefig('gyro.png', dpi=600, bbox_inches = "tight")
+fig2.savefig('gyro.svg', dpi=600, bbox_inches = "tight")
 
 print("Writing Kalibr imu.yaml file.")
 print("Make sure to update rostopic and rate.")
