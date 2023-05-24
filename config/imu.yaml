@@ -1,0 +1,11 @@
+#Accelerometer
+accelerometer_noise_density: 0.00359760607635128 
+accelerometer_random_walk: 0.00010140157333630026 
+
+#Gyroscope
+gyroscope_noise_density: 0.00022359866385167465 
+gyroscope_random_walk: 6.989043171481762e-06 
+
+rostopic: '/sensors/imu' #Make sure this is correct
+update_rate: 400.0 #Make sure this is correct
+
