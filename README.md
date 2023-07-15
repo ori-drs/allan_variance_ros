@@ -12,7 +12,17 @@ This tool is designed for Ubuntu 20.04. Attempting to use on another distro or v
 
 ## How to build
 
-``catkin build  allan_variance_ros``
+```
+$ cd ~/allan_var_workspace
+$ catkin build allan_variance_ros
+```
+
+To run, you'll need to source the catkin workspace setup.
+```
+$ source devel/setup.bash
+$ rosrun allan_variance_ros <tab-tab>
+allan_variance  analysis.py     cookbag.py      imu_simulator 
+```
 
 ## How to use
 
