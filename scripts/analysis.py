@@ -115,24 +115,29 @@ accel_min_x_index = np.argmin(acceleration[:,0])
 accel_min_y_index = np.argmin(acceleration[:,1])
 accel_min_z_index = np.argmin(acceleration[:,2])
 
-yaml_file = open("imu.yaml", "w")
+log_file = open("log.yaml", "w")
+kalibr_file = open("imu.yaml", "w")
 
-print("ACCELEROMETER:")
-print(f"X Velocity Random Walk: {accel_wn_intercept_x: .5f} m/s/sqrt(s) {accel_wn_intercept_x*60: .5f} m/s/sqrt(hr)")
-print(f"Y Velocity Random Walk: {accel_wn_intercept_y: .5f} m/s/sqrt(s) {accel_wn_intercept_y*60: .5f} m/s/sqrt(hr)")
-print(f"Z Velocity Random Walk: {accel_wn_intercept_z: .5f} m/s/sqrt(s) {accel_wn_intercept_z*60: .5f} m/s/sqrt(hr)")
+log_file.write("#ACCELEROMETER:\n")
+log_file.write(f"X Velocity Random Walk: {accel_wn_intercept_x: .5f} m/s/sqrt(s) {accel_wn_intercept_x*60: .5f} m/s/sqrt(hr)\n")
+log_file.write(f"Y Velocity Random Walk: {accel_wn_intercept_y: .5f} m/s/sqrt(s) {accel_wn_intercept_y*60: .5f} m/s/sqrt(hr)\n")
+log_file.write(f"Z Velocity Random Walk: {accel_wn_intercept_z: .5f} m/s/sqrt(s) {accel_wn_intercept_z*60: .5f} m/s/sqrt(hr)\n")
+log_file.write("\n")
 
-print(f"X Bias Correlation Time: {accel_min_x_index: .5f} 1/s {accel_min_x_index*3600: .5f} 1/hr")
-print(f"Y Bias Correlation Time: {accel_min_y_index: .5f} 1/s {accel_min_y_index*3600: .5f} 1/hr")
-print(f"Z Bias Correlation Time: {accel_min_z_index: .5f} 1/s {accel_min_z_index*3600: .5f} 1/hr")
+log_file.write(f"X Bias Correlation Time: {accel_min_x_index: .5f} 1/s {accel_min_x_index*3600: .5f} 1/hr\n")
+log_file.write(f"Y Bias Correlation Time: {accel_min_y_index: .5f} 1/s {accel_min_y_index*3600: .5f} 1/hr\n")
+log_file.write(f"Z Bias Correlation Time: {accel_min_z_index: .5f} 1/s {accel_min_z_index*3600: .5f} 1/hr\n")
+log_file.write("\n")
 
-print(f"X Bias Instability: {accel_min_x: .5f} m/s^2 {accel_min_x*3600*3600: .5f} m/hr^2")
-print(f"Y Bias Instability: {accel_min_y: .5f} m/s^2 {accel_min_y*3600*3600: .5f} m/hr^2")
-print(f"Z Bias Instability: {accel_min_z: .5f} m/s^2 {accel_min_z*3600*3600: .5f} m/hr^2")
+log_file.write(f"X Bias Instability: {accel_min_x: .5f} m/s^2 {accel_min_x*3600*3600: .5f} m/hr^2\n")
+log_file.write(f"Y Bias Instability: {accel_min_y: .5f} m/s^2 {accel_min_y*3600*3600: .5f} m/hr^2\n")
+log_file.write(f"Z Bias Instability: {accel_min_z: .5f} m/s^2 {accel_min_z*3600*3600: .5f} m/hr^2\n")
+log_file.write("\n")
 
-print(f"X Accel Random Walk: {accel_rr_intercept_x: .5f} m/s^2/sqrt(s)")
-print(f"Y Accel Random Walk: {accel_rr_intercept_y: .5f} m/s^2/sqrt(s)")
-print(f"Z Accel Random Walk: {accel_rr_intercept_z: .5f} m/s^2/sqrt(s)")
+log_file.write(f"X Accel Random Walk: {accel_rr_intercept_x: .5f} m/s^2/sqrt(s)\n")
+log_file.write(f"Y Accel Random Walk: {accel_rr_intercept_y: .5f} m/s^2/sqrt(s)\n")
+log_file.write(f"Z Accel Random Walk: {accel_rr_intercept_z: .5f} m/s^2/sqrt(s)\n")
+log_file.write("\n")
 
 average_acc_white_noise = (accel_wn_intercept_x + accel_wn_intercept_y + accel_wn_intercept_z) / 3
 average_acc_bias_instability = (accel_min_x + accel_min_y + accel_min_z) / 3
@@ -142,10 +147,10 @@ average_acc_random_walk = (accel_rr_intercept_x + accel_rr_intercept_y + accel_r
 worst_accel_white_noise = np.amax([accel_wn_intercept_x, accel_wn_intercept_y, accel_wn_intercept_z])
 worst_accel_random_walk = np.amax([accel_rr_intercept_x, accel_rr_intercept_y, accel_rr_intercept_z])
 
-yaml_file.write("#Accelerometer\n")
-yaml_file.write("accelerometer_noise_density: " + repr(worst_accel_white_noise) + " \n")
-yaml_file.write("accelerometer_random_walk: " + repr(worst_accel_random_walk) + " \n")
-yaml_file.write("\n")
+kalibr_file.write("#Accelerometer\n")
+kalibr_file.write("accelerometer_noise_density: " + repr(worst_accel_white_noise) + " \n")
+kalibr_file.write("accelerometer_random_walk: " + repr(worst_accel_random_walk) + " \n")
+kalibr_file.write("\n")
 
 
 dpi = 90
@@ -210,22 +215,26 @@ gyro_min_x_index = np.argmin(rotation_rate[:,0])
 gyro_min_y_index = np.argmin(rotation_rate[:,1])
 gyro_min_z_index = np.argmin(rotation_rate[:,2])
 
-print("GYROSCOPE:")
-print(f"X Angle Random Walk: {gyro_wn_intercept_x: .5f} deg/sqrt(s) {gyro_wn_intercept_x * 60: .5f} deg/sqrt(hr)")
-print(f"Y Angle Random Walk: {gyro_wn_intercept_y: .5f} deg/sqrt(s) {gyro_wn_intercept_y * 60: .5f} deg/sqrt(hr)")
-print(f"Z Angle Random Walk: {gyro_wn_intercept_z: .5f} deg/sqrt(s) {gyro_wn_intercept_z * 60: .5f} deg/sqrt(hr)")
+log_file.write("#GYROSCOPE:\n")
+log_file.write(f"X Angle Random Walk: {gyro_wn_intercept_x: .5f} deg/sqrt(s) {gyro_wn_intercept_x * 60: .5f} deg/sqrt(hr)\n")
+log_file.write(f"Y Angle Random Walk: {gyro_wn_intercept_y: .5f} deg/sqrt(s) {gyro_wn_intercept_y * 60: .5f} deg/sqrt(hr)\n")
+log_file.write(f"Z Angle Random Walk: {gyro_wn_intercept_z: .5f} deg/sqrt(s) {gyro_wn_intercept_z * 60: .5f} deg/sqrt(hr)\n")
+log_file.write("\n")
 
-print(f"X Bias Correlation Time: {gyro_min_x_index: .5f} 1/s {gyro_min_x_index*3600: .5f} 1/hr")
-print(f"Y Bias Correlation Time: {gyro_min_y_index: .5f} 1/s {gyro_min_y_index*3600: .5f} 1/hr")
-print(f"Z Bias Correlation Time: {gyro_min_z_index: .5f} 1/s {gyro_min_z_index*3600: .5f} 1/hr")
+log_file.write(f"X Bias Correlation Time: {gyro_min_x_index: .5f} 1/s {gyro_min_x_index*3600: .5f} 1/hr\n")
+log_file.write(f"Y Bias Correlation Time: {gyro_min_y_index: .5f} 1/s {gyro_min_y_index*3600: .5f} 1/hr\n")
+log_file.write(f"Z Bias Correlation Time: {gyro_min_z_index: .5f} 1/s {gyro_min_z_index*3600: .5f} 1/hr\n")
+log_file.write("\n")
 
-print(f"X Bias Instability: {gyro_min_x: .5f} deg/s {gyro_min_x*60*60: .5f} deg/hr")
-print(f"Y Bias Instability: {gyro_min_y: .5f} deg/s {gyro_min_y*60*60: .5f} deg/hr")
-print(f"Z Bias Instability: {gyro_min_z: .5f} deg/s {gyro_min_z*60*60: .5f} deg/hr")
+log_file.write(f"X Bias Instability: {gyro_min_x: .5f} deg/s {gyro_min_x*60*60: .5f} deg/hr\n")
+log_file.write(f"Y Bias Instability: {gyro_min_y: .5f} deg/s {gyro_min_y*60*60: .5f} deg/hr\n")
+log_file.write(f"Z Bias Instability: {gyro_min_z: .5f} deg/s {gyro_min_z*60*60: .5f} deg/hr\n")
+log_file.write("\n")
 
-print(f"X Rate Random Walk: {gyro_rr_intercept_x: .5f} deg/s/sqrt(s)")
-print(f"Y Rate Random Walk: {gyro_rr_intercept_y: .5f} deg/s/sqrt(s)")
-print(f"Z Rate Random Walk: {gyro_rr_intercept_z: .5f} deg/s/sqrt(s)")
+log_file.write(f"X Rate Random Walk: {gyro_rr_intercept_x: .5f} deg/s/sqrt(s)\n")
+log_file.write(f"Y Rate Random Walk: {gyro_rr_intercept_y: .5f} deg/s/sqrt(s)\n")
+log_file.write(f"Z Rate Random Walk: {gyro_rr_intercept_z: .5f} deg/s/sqrt(s)\n")
+log_file.write("\n")
 
 average_gyro_white_noise = (gyro_wn_intercept_x + gyro_wn_intercept_y + gyro_wn_intercept_z) / 3
 average_gyro_bias_instability = (gyro_min_x + gyro_min_y + gyro_min_z) / 3
@@ -235,21 +244,21 @@ average_gyro_random_walk = (gyro_rr_intercept_x + gyro_rr_intercept_y + gyro_rr_
 worst_gyro_white_noise = np.amax([gyro_wn_intercept_x, gyro_wn_intercept_y, gyro_wn_intercept_z])
 worst_gyro_random_walk = np.amax([gyro_rr_intercept_x, gyro_rr_intercept_y, gyro_rr_intercept_z])
 
-yaml_file.write("#Gyroscope\n")
+kalibr_file.write("#Gyroscope\n")
 # Convert back to radians here
-yaml_file.write("gyroscope_noise_density: " + repr(worst_gyro_white_noise * np.pi / 180) + " \n")
-yaml_file.write("gyroscope_random_walk: " + repr(worst_gyro_random_walk * np.pi / 180) + " \n")
-yaml_file.write("\n")
+kalibr_file.write("gyroscope_noise_density: " + repr(worst_gyro_white_noise * np.pi / 180) + " \n")
+kalibr_file.write("gyroscope_random_walk: " + repr(worst_gyro_random_walk * np.pi / 180) + " \n")
+kalibr_file.write("\n")
 
 
 if args.config:
-	yaml_file.write("rostopic: " + repr(rostopic) + " \n")
-	yaml_file.write("update_rate: " + repr(update_rate) + " \n")
+	kalibr_file.write("rostopic: " + repr(rostopic) + " \n")
+	kalibr_file.write("update_rate: " + repr(update_rate) + " \n")
 else:
-	yaml_file.write("rostopic: " + repr(rostopic) + " #Make sure this is correct\n")
-	yaml_file.write("update_rate: " + repr(update_rate) + " #Make sure this is correct\n")
-yaml_file.write("\n")
-yaml_file.close()
+	kalibr_file.write("rostopic: " + repr(rostopic) + " #Make sure this is correct\n")
+	kalibr_file.write("update_rate: " + repr(update_rate) + " #Make sure this is correct\n")
+kalibr_file.write("\n")
+kalibr_file.close()
 
 
 fig2 = plt.figure(num="Gyro", dpi=dpi, figsize=figsize)
