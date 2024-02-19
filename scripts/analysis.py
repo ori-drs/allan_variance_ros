@@ -234,12 +234,10 @@ log_file.write(f"X Rate Random Walk: {gyro_rr_intercept_x: .5f} deg/s/sqrt(s)\n"
 log_file.write(f"Y Rate Random Walk: {gyro_rr_intercept_y: .5f} deg/s/sqrt(s)\n")
 log_file.write(f"Z Rate Random Walk: {gyro_rr_intercept_z: .5f} deg/s/sqrt(s)\n")
 
+# Go back to the beginning of the file and output to terminal
 log_file.seek(0)
 print(log_file.read())
-
 log_file.close()
-
-
 
 average_gyro_white_noise = (gyro_wn_intercept_x + gyro_wn_intercept_y + gyro_wn_intercept_z) / 3
 average_gyro_bias_instability = (gyro_min_x + gyro_min_y + gyro_min_z) / 3
