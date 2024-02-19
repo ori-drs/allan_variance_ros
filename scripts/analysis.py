@@ -122,6 +122,10 @@ print(f"X Velocity Random Walk: {accel_wn_intercept_x: .5f} m/s/sqrt(s) {accel_w
 print(f"Y Velocity Random Walk: {accel_wn_intercept_y: .5f} m/s/sqrt(s) {accel_wn_intercept_y*60: .5f} m/s/sqrt(hr)")
 print(f"Z Velocity Random Walk: {accel_wn_intercept_z: .5f} m/s/sqrt(s) {accel_wn_intercept_z*60: .5f} m/s/sqrt(hr)")
 
+print(f"X Bias Correlation Time: {accel_min_x_index: .5f} 1/s {accel_min_x_index*3600: .5f} 1/hr")
+print(f"Y Bias Correlation Time: {accel_min_y_index: .5f} 1/s {accel_min_y_index*3600: .5f} 1/hr")
+print(f"Z Bias Correlation Time: {accel_min_z_index: .5f} 1/s {accel_min_z_index*3600: .5f} 1/hr")
+
 print(f"X Bias Instability: {accel_min_x: .5f} m/s^2 {accel_min_x*3600*3600: .5f} m/hr^2")
 print(f"Y Bias Instability: {accel_min_y: .5f} m/s^2 {accel_min_y*3600*3600: .5f} m/hr^2")
 print(f"Z Bias Instability: {accel_min_z: .5f} m/s^2 {accel_min_z*3600*3600: .5f} m/hr^2")
@@ -210,6 +214,10 @@ print("GYROSCOPE:")
 print(f"X Angle Random Walk: {gyro_wn_intercept_x: .5f} deg/sqrt(s) {gyro_wn_intercept_x * 60: .5f} deg/sqrt(hr)")
 print(f"Y Angle Random Walk: {gyro_wn_intercept_y: .5f} deg/sqrt(s) {gyro_wn_intercept_y * 60: .5f} deg/sqrt(hr)")
 print(f"Z Angle Random Walk: {gyro_wn_intercept_z: .5f} deg/sqrt(s) {gyro_wn_intercept_z * 60: .5f} deg/sqrt(hr)")
+
+print(f"X Bias Correlation Time: {gyro_min_x_index: .5f} 1/s {gyro_min_x_index*3600: .5f} 1/hr")
+print(f"Y Bias Correlation Time: {gyro_min_y_index: .5f} 1/s {gyro_min_y_index*3600: .5f} 1/hr")
+print(f"Z Bias Correlation Time: {gyro_min_z_index: .5f} 1/s {gyro_min_z_index*3600: .5f} 1/hr")
 
 print(f"X Bias Instability: {gyro_min_x: .5f} deg/s {gyro_min_x*60*60: .5f} deg/hr")
 print(f"Y Bias Instability: {gyro_min_y: .5f} deg/s {gyro_min_y*60*60: .5f} deg/hr")
