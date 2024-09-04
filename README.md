@@ -110,8 +110,21 @@ Some additional rosbags of real IMU data for different sensors is available [her
 
 ## Author
 
-[Russell Buchanan](https://raabuchanan.com/)
+[Russell Buchanan](https://www.ripl-lab.com/)
 
+If you use this package for academic work, please consider using the citation below:
+
+```
+@software{AllanVarianceRos,
+  author       = {Russell Buchanan},
+  title        = {Allan Variance ROS},
+  month        = Nov,
+  year         = 2021,
+  publisher    = {Oxford Robotics Institute, DRS Lab},
+  version      = {1.2},
+  url          = {https://github.com/ori-drs/allan_variance_ros}}
+}
+```
 
 ## References
 
