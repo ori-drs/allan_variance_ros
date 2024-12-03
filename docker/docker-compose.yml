@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  allan_variance_ros:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: allan_variance_ros
+    environment:
+     - DISPLAY=${DISPLAY}
+     - QT_X11_NO_MITSHM=1
+    tty: true
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /tmp/.docker.xauth:/tmp/.docker.xauth:rw
+      - ..:/catkin_ws/src/allan_variance_ros
