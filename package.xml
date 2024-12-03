@@ -17,6 +17,9 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <depend>geometry_msgs</depend>
+  <depend>python3-matplotlib</depend>
+  <depend>python3-numpy</depend>
+  <depend>python3-scipy</depend>
   <depend>sensor_msgs</depend>
   <depend>rospy</depend>
   <depend>tf2_geometry_msgs</depend>
