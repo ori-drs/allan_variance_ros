@@ -1,0 +1,57 @@
+version: "3.3"
+services:
+  devcontainer:
+    build:
+      context: ./../
+      dockerfile: ./.devcontainer/${DOCKERFILE_BUILD}
+      args:
+        build_apt_deps: ${BUILD_APT_DEPS}
+        username: ${USER_DOCKER}
+        uid: ${CURRENT_UID}
+        ssh_port: ${SSH_PORT}
+    devices:
+      - "/dev/bus/usb:/dev/bus/usb"
+      - "/dev/video*:/dev/video*"
+      - "/dev:/dev"
+    ports:
+      - "9876:9876"
+    privileged: true
+    user: ${USER_DOCKER}
+    volumes:
+      - ${WORKSPACE}:${WORKSPACE_DOCKER}
+      - ${NETRC_FILE:-/dev/null}:${NETRC_FILE_DOCKER:-/home/$USER/.netrc-null}
+      - ${AWS_FILE:-/dev/null}:${AWS_FILE_DOCKER:-/home/$USER/.aws-null}
+      - ${SSH_FILE:-/dev/null}:${SSH_FILE_DOCKER:-/home/$USER/.ssh/ssh.null}
+      - ${DOCKER_DIR:-/dev/null}:${DOCKER_DIR_DOCKER:-/home/$USER/.docker-null}
+      - ${BAZEL_LOCAL_CACHE:-/dev/null}:${BAZEL_LOCAL_CACHE_DOCKER:-/home/$USER/.cache/bazel-null}
+      - ${HOME}:${HOME}
+      - ${HOME}/.config:${HOME_DOCKER}/.config
+      - ${HOME}/.gitconfig:${HOME_DOCKER}/.gitconfig
+      - ${WORKSPACE}/.devcontainer/.vscode-server:${HOME_DOCKER}/.vscode-server
+      - ${SSH_AUTH_SOCK:-/dev/null}:${SSH_AUTH_SOCK:-/home/$USER_DOCKER/.ssh-auth-sock-null}
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ${XAUTHORITY:-~/.Xauthority}:/home/${USER_DOCKER}/.Xauthority
+      - ${HOME}/.Xauthority:/root/.Xauthority
+    env_file: .env
+    environment:
+      ARCH: ${ARCH:-amd64}
+      VCS_REF: ${VCS_REF:-dirty}
+      VCS_SHORT_REF: ${VCS_SHORT_REF:-dirty}
+      VCS_URL: ${VCS_URL:-dirty}
+      VCS_DESCRIBE: ${GIT_DESCRIBE:-none}
+      BUILD_NUMBER: ${BUILD_NUMBER:-non-ci}
+      BUILD_DATE: ${BUILD_DATE:-non-ci}
+      BRANCH_NAME: ${BRANCH_NAME:-non-ci}
+      DOCKER_TAG: ${DOCKER_TAG:-non-ci}
+      SSH_AUTH_SOCK: ${SSH_AUTH_SOCK}
+      HOST_SSH_AUTH_SOCK: ${SSH_AUTH_SOCK}
+      WORKSPACE_DOCKER: ${WORKSPACE_DOCKER}
+      USER_HOST: ${USER}
+      USER_DOCKER: ${USER_DOCKER}
+      DISPLAY: ${DISPLAY}
+      XAUTHORITY: /home/${USER_DOCKER}/.Xauthority
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    working_dir: ${WORKSPACE_DOCKER}
+    network_mode: host
+    ipc: host
+    pid: host

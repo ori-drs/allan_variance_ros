@@ -1,4 +1,10 @@
 
+/**
+ * @file   AllanVarianceComputor.cpp
+ * @brief  Implementation of the AllanVarianceComputor class.
+ * @author Russell Buchanan
+ */
+
 #include "allan_variance_ros/AllanVarianceComputor.hpp"
 
 namespace allan_variance_ros {

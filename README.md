@@ -10,25 +10,38 @@ While there are many open source tools which do the same thing, this package has
 
 This tool is designed for Ubuntu 20.04. Attempting to use on another distro or version may require some code changes.
 
+If you do not have Ubuntu 20.04, you can use the devcontainer to build and run the tool. See the [devcontainer README](.devcontainer/README.md) for more information.
+
 ## How to build
 
-``catkin build  allan_variance_ros``
+The allan_variance_ros folder should be in the src folder of the catkin workspace.
+For example: ~/catkin_ws/src/allan_variance_ros
+
+From the catkin workspace directory (e.g. ~/catkin_ws), run:
+``catkin build allan_variance_ros``
+``source devel/setup.bash``
 
 ## How to use
 
-1. Place your IMU on some damped surface and record your IMU data to a rosbag. You must record **at least** 3 hours of data. The longer the sequence, the more accurate the results.
+1. Ensure rosmaster is running by running ``roscore`` in a terminal.
 
-2. **Recommended** Reorganize ROS messages by timestamp:
+2. Place your IMU on some damped surface and record your IMU data to a rosbag. You must record **at least** 3 hours of data. The longer the sequence, the more accurate the results.
+
+3. **Recommended** Reorganize ROS messages by timestamp:
 
   ``rosrun allan_variance_ros cookbag.py --input original_rosbag --output cooked_rosbag``
 
-3. Run the Allan Variance computation tool (example config files provided):
+4. Run the Allan Variance computation tool (example config files provided):
 
   ``rosrun allan_variance_ros allan_variance [path_to_folder_containing_bag] [path_to_config_file]``
 
-4. This will compute the Allan Deviation for the IMU and generate a CSV. The next step is to visualize the plots and get parameters. For this run:
+5. This will compute the Allan Deviation for the IMU and generate a CSV. The next step is to visualize the plots and get parameters. For this run:
 
   ``rosrun allan_variance_ros analysis.py --data allan_variance.csv``
+
+  If you have a config file to set the topic and update rate, you can pass it in as well:
+
+  ``rosrun allan_variance_ros analysis.py --data allan_variance.csv --config config/realsense_d425i.yaml``
 
   Press `space` to go to next figure.
 

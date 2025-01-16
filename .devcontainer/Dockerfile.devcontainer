@@ -1,0 +1,75 @@
+# Use the official Ubuntu 20.04 as a base image
+FROM ubuntu:20.04
+
+# Set environment variables for non-interactive installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+ARG uid=1002:1002
+ARG gid=1002:1002
+ARG username=local
+
+# Update and install necessary packages
+RUN apt-get update && apt-get install -y \
+    lsb-release \
+    curl \
+    gnupg2 \
+    build-essential \
+    cmake \
+    git \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Setup sources for ROS Noetic
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
+
+# Install ROS Noetic
+RUN apt-get update && apt-get install -y \
+    ros-noetic-desktop-full \
+    python3-rosdep \
+    python3-rosinstall \
+    python3-rosinstall-generator \
+    python3-wstool \
+    python3-rosdep \
+    python3-catkin-tools \
+    python3-pip \
+    python3-rosbag \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install VIM
+RUN apt-get update && apt-get install -y vim
+
+# Initialize rosdep
+RUN rosdep init && rosdep update
+
+# Install pip requirements
+RUN pip3 install scipy numpy matplotlib rosbags
+
+# Setup environment
+RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+SHELL ["/bin/bash", "-c"]
+
+# User setup
+RUN useradd -m $username -l -u "$(echo $uid | cut -d: -f1)" \
+    && usermod -u "$(echo $uid | cut -d: -f1)" $username \
+    && groupmod -g "$(echo $gid | cut -d: -f2)" $username \
+    && usermod -aG sudo,video,dialout,plugdev,audio $username \
+    && echo $username ' ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers \
+    && mkdir -p /home/$username/.cache /home/$username/.ssh \
+    && ssh-keyscan github.com >> /home/$username/.ssh/known_hosts \
+    && chown -R $username:$username /home/$username
+
+# install ssh
+RUN apt-get update && apt-get install -y openssh-server
+
+# Create a workspace
+USER $username
+RUN mkdir -p /home/local/catkin_ws/src
+WORKDIR /home/local/catkin_ws
+
+# Build the workspace
+RUN /bin/bash -c "source /opt/ros/noetic/setup.bash && catkin_make"
+RUN rm -rf /home/local/catkin_ws/build /home/local/catkin_ws/devel
+
+# Set the default command to run when starting the container
+CMD ["bash"]
