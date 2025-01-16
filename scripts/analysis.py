@@ -111,6 +111,8 @@ with open(args.data) as input_file:
 		counter = counter + 1
 		if (counter % args.skip != 0):
 			continue
+		# Data is in the format:
+		# period, accel_x_allan_deviation, accel_y_allan_deviation, accel_z_allan_deviation, gyro_x_allan_deviation, gyro_y_allan_deviation, gyro_z_allan_deviation
 		t = float(row[0])
 		period = np.append(period, [t], axis=0)
 		acceleration = np.append(acceleration, np.array([float(row[1]), float(row[2]), float(row[3])]).reshape(1,3), axis=0)
@@ -120,10 +122,12 @@ with open(args.data) as input_file:
 white_noise_break_point = np.where(period == 10)[0][0]
 random_rate_break_point = np.where(period == 10)[0][0]
 
+# White Noise Intercept with a line of the form y = -0.5 * x + 1.0
 accel_wn_intercept_x, xfit_wn = get_intercept(period[0:white_noise_break_point], acceleration[0:white_noise_break_point,0], -0.5, 1.0)
 accel_wn_intercept_y, yfit_wn = get_intercept(period[0:white_noise_break_point], acceleration[0:white_noise_break_point,1], -0.5, 1.0)
 accel_wn_intercept_z, zfit_wn = get_intercept(period[0:white_noise_break_point], acceleration[0:white_noise_break_point,2], -0.5, 1.0)
 
+# Random Walk Intercept with a line of the form y = 0.5 * x + 3.0
 accel_rr_intercept_x, xfit_rr = get_intercept(period, acceleration[:,0], 0.5, 3.0)
 accel_rr_intercept_y, yfit_rr = get_intercept(period, acceleration[:,1], 0.5, 3.0)
 accel_rr_intercept_z, zfit_rr = get_intercept(period, acceleration[:,2], 0.5, 3.0)
@@ -136,7 +140,7 @@ accel_min_x_index = np.argmin(acceleration[:,0])
 accel_min_y_index = np.argmin(acceleration[:,1])
 accel_min_z_index = np.argmin(acceleration[:,2])
 
-# use worst value
+# Use worst value among all axes x,y,z
 worst_accel_white_noise = np.amax([accel_wn_intercept_x, accel_wn_intercept_y, accel_wn_intercept_z])
 worst_accel_random_walk = np.amax([accel_rr_intercept_x, accel_rr_intercept_y, accel_rr_intercept_z])
 
@@ -256,15 +260,6 @@ average_gyro_white_noise = (gyro_wn_intercept_x + gyro_wn_intercept_y + gyro_wn_
 average_gyro_bias_instability = (gyro_min_x + gyro_min_y + gyro_min_z) / 3
 average_gyro_random_walk = (gyro_rr_intercept_x + gyro_rr_intercept_y + gyro_rr_intercept_z) / 3
 
-if args.config:
-	yaml_file.write("rostopic: " + repr(rostopic) + " \n")
-	yaml_file.write("update_rate: " + repr(update_rate) + " \n")
-else:
-	yaml_file.write("rostopic: " + repr(rostopic) + " #Make sure this is correct\n")
-	yaml_file.write("update_rate: " + repr(update_rate) + " #Make sure this is correct\n")
-yaml_file.write("\n")
-yaml_file.close()
-
 # Plot gyroscope data
 fig2 = plt.figure(num="Gyro", dpi=dpi, figsize=figsize)
 
@@ -309,6 +304,16 @@ w = plt.waitforbuttonpress(timeout=5)
 plt.close()
 
 fig2.savefig('gyro.png', dpi=600, bbox_inches = "tight")
+
+# Write rostopic and update rate to yaml file
+if args.config:
+	yaml_file.write("rostopic: " + repr(rostopic) + " \n")
+	yaml_file.write("update_rate: " + repr(update_rate) + " \n")
+else:
+	yaml_file.write("rostopic: " + repr(rostopic) + " #Make sure this is correct\n")
+	yaml_file.write("update_rate: " + repr(update_rate) + " #Make sure this is correct\n")
+yaml_file.write("\n")
+yaml_file.close()
 
 print("Writing Kalibr imu.yaml file.")
 print("Make sure to update the rostopic and rate in the file if a config file was not provided.")
