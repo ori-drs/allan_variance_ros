@@ -84,6 +84,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--data', metavar='STR', type=str, help='TUM data files to plot')
 parser.add_argument('--config', metavar='STR', type=str, help='yaml config file')
 parser.add_argument("--skip", type=int, default=1)
+parser.add_argument("--output", type=str, default="imu.yaml")
 args = parser.parse_args()
 
 # Load config file if provided
@@ -145,7 +146,7 @@ worst_accel_white_noise = np.amax([accel_wn_intercept_x, accel_wn_intercept_y, a
 worst_accel_random_walk = np.amax([accel_rr_intercept_x, accel_rr_intercept_y, accel_rr_intercept_z])
 
 # Write to yaml file
-yaml_file = open("imu.yaml", "w")
+yaml_file = open(args.output, "w")
 yaml_file.write("#Accelerometer\n")
 yaml_file.write("accelerometer_noise_density: " + repr(worst_accel_white_noise) + " \n")
 yaml_file.write("accelerometer_random_walk: " + repr(worst_accel_random_walk) + " \n")
