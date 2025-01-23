@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-# 
-# @file   analysis.py
-# @brief  Plotting and analysis tool to determine IMU parameters.
-# @author Russell Buchanan
-# 
+"""
+@file   analysis.py
+@brief  Plotting and analysis tool to determine IMU parameters.
+@author Russell Buchanan
+"""
 
 import argparse
 import csv
@@ -15,9 +15,32 @@ from scipy.optimize import curve_fit
 
 
 def line_func(x, m, b):
+	"""
+	Linear function to fit the data.
+
+	Args:
+		x (np.array): The x values to fit.
+		m (float): The slope of the line.
+		b (float): The y-intercept of the line.
+
+	Returns:
+		np.array: The y values of the line.
+	"""
 	return m * x + b
 
 def get_intercept(x, y, m, b):
+	"""
+	Get the intercept of the line.
+
+	Args:
+		x (np.array): The x values to fit.
+		y (np.array): The y values to fit.
+		m (float): The slope of the line.
+		b (float): The y-intercept of the line.
+
+	Returns:
+		float: The y-intercept of the line.
+	"""
 
 	logx = np.log(x)
 	logy = np.log(y)
@@ -29,8 +52,20 @@ def get_intercept(x, y, m, b):
 
 
 def generate_prediction(tau, q_quantization=0, q_white=0, q_bias_instability=0, q_walk=0, q_ramp=0):
+	"""
+	Generate a prediction of the Allan deviation.
+
+	Args:
+		tau (np.array): The time periods to predict.
+		q_quantization (float): The quantization noise.
+		q_white (float): The white noise.
+		q_bias_instability (float): The bias instability.
+		q_walk (float): The random walk.
+		q_ramp (float): The ramp.
+	"""
 	n = len(tau)
 
+	# Create the matrix A
 	A = np.empty((n, 5))
 	A[:, 0] = 3 / tau**2
 	A[:, 1] = 1 / tau
@@ -38,25 +73,21 @@ def generate_prediction(tau, q_quantization=0, q_white=0, q_bias_instability=0, 
 	A[:, 3] = tau / 3
 	A[:, 4] = tau**2 / 2
 
+	# Create the parameters vector
 	params = np.array([q_quantization ** 2, q_white ** 2, q_bias_instability ** 2, q_walk ** 2, q_ramp ** 2])
 
+	# Calculate the Allan deviation
 	return np.sqrt(A.dot(params))
 
-
+# Parse command line arguments
 parser = argparse.ArgumentParser()
-
-parser.add_argument('--data', metavar='STR', type=str,
-					help='TUM data files to plot')
-
-parser.add_argument('--config', metavar='STR', type=str,
-					help='yaml config file')
-
+parser.add_argument('--data', metavar='STR', type=str, help='TUM data files to plot')
+parser.add_argument('--config', metavar='STR', type=str, help='yaml config file')
 parser.add_argument("--skip", type=int, default=1)
-
+parser.add_argument("--output", type=str, default="imu.yaml")
 args = parser.parse_args()
 
-line_count = 0
-
+# Load config file if provided
 rostopic = "/sensors/imu"
 update_rate = 400.0
 if args.config:
@@ -67,45 +98,40 @@ if args.config:
 	update_rate = config["imu_rate"]
 
 # Assumes tum format
-
+# Initialize arrays
 period = np.array([])
 acceleration = np.empty((0,3), float)
 rotation_rate = np.empty((0,3), float)
 
+# Read data from file
 with open(args.data) as input_file:
 	csv_reader = csv.reader(input_file, delimiter=' ')
-
-	first_row = True
 	counter = 0
 
 	for row in csv_reader:
-		# if(first_row):
-		# 	first_row = False
-		# 	continue
-
 		counter = counter + 1
-
 		if (counter % args.skip != 0):
 			continue
-
+		# Data is in the format:
+		# period, accel_x_allan_deviation, accel_y_allan_deviation, accel_z_allan_deviation, gyro_x_allan_deviation, gyro_y_allan_deviation, gyro_z_allan_deviation
 		t = float(row[0])
 		period = np.append(period, [t], axis=0)
 		acceleration = np.append(acceleration, np.array([float(row[1]), float(row[2]), float(row[3])]).reshape(1,3), axis=0)
 		rotation_rate = np.append(rotation_rate, np.array([float(row[4]), float(row[5]), float(row[6])]).reshape(1,3), axis=0)
 
-
+# Calculate intercepts and minimums for accelerometer
 white_noise_break_point = np.where(period == 10)[0][0]
 random_rate_break_point = np.where(period == 10)[0][0]
 
-
+# White Noise Intercept with a line of the form y = -0.5 * x + 1.0
 accel_wn_intercept_x, xfit_wn = get_intercept(period[0:white_noise_break_point], acceleration[0:white_noise_break_point,0], -0.5, 1.0)
 accel_wn_intercept_y, yfit_wn = get_intercept(period[0:white_noise_break_point], acceleration[0:white_noise_break_point,1], -0.5, 1.0)
 accel_wn_intercept_z, zfit_wn = get_intercept(period[0:white_noise_break_point], acceleration[0:white_noise_break_point,2], -0.5, 1.0)
 
+# Random Walk Intercept with a line of the form y = 0.5 * x + 3.0
 accel_rr_intercept_x, xfit_rr = get_intercept(period, acceleration[:,0], 0.5, 3.0)
 accel_rr_intercept_y, yfit_rr = get_intercept(period, acceleration[:,1], 0.5, 3.0)
 accel_rr_intercept_z, zfit_rr = get_intercept(period, acceleration[:,2], 0.5, 3.0)
-
 
 accel_min_x = np.amin(acceleration[:,0])
 accel_min_y = np.amin(acceleration[:,1])
@@ -115,7 +141,16 @@ accel_min_x_index = np.argmin(acceleration[:,0])
 accel_min_y_index = np.argmin(acceleration[:,1])
 accel_min_z_index = np.argmin(acceleration[:,2])
 
-yaml_file = open("imu.yaml", "w")
+# Use worst value among all axes x,y,z
+worst_accel_white_noise = np.amax([accel_wn_intercept_x, accel_wn_intercept_y, accel_wn_intercept_z])
+worst_accel_random_walk = np.amax([accel_rr_intercept_x, accel_rr_intercept_y, accel_rr_intercept_z])
+
+# Write to yaml file
+yaml_file = open(args.output, "w")
+yaml_file.write("#Accelerometer\n")
+yaml_file.write("accelerometer_noise_density: " + repr(worst_accel_white_noise) + " \n")
+yaml_file.write("accelerometer_random_walk: " + repr(worst_accel_random_walk) + " \n")
+yaml_file.write("\n")
 
 print("ACCELEROMETER:")
 print(f"X Velocity Random Walk: {accel_wn_intercept_x: .5f} m/s/sqrt(s) {accel_wn_intercept_x*60: .5f} m/s/sqrt(hr)")
@@ -134,16 +169,7 @@ average_acc_white_noise = (accel_wn_intercept_x + accel_wn_intercept_y + accel_w
 average_acc_bias_instability = (accel_min_x + accel_min_y + accel_min_z) / 3
 average_acc_random_walk = (accel_rr_intercept_x + accel_rr_intercept_y + accel_rr_intercept_z) / 3
 
-# use worst value
-worst_accel_white_noise = np.amax([accel_wn_intercept_x, accel_wn_intercept_y, accel_wn_intercept_z])
-worst_accel_random_walk = np.amax([accel_rr_intercept_x, accel_rr_intercept_y, accel_rr_intercept_z])
-
-yaml_file.write("#Accelerometer\n")
-yaml_file.write("accelerometer_noise_density: " + repr(worst_accel_white_noise) + " \n")
-yaml_file.write("accelerometer_random_walk: " + repr(worst_accel_random_walk) + " \n")
-yaml_file.write("\n")
-
-
+# Plot accelerometer data
 dpi = 90
 figsize = (16, 9)
 fig1 = plt.figure(num="Acceleration", dpi=dpi, figsize=figsize)
@@ -190,6 +216,7 @@ plt.close()
 
 fig1.savefig('acceleration.png', dpi=600, bbox_inches = "tight")
 
+# Calculate intercepts and minimums for gyroscope
 gyro_wn_intercept_x, xfit_wn = get_intercept(period[0:white_noise_break_point], rotation_rate[0:white_noise_break_point,0], -0.5, 1.0)
 gyro_wn_intercept_y, yfit_wn = get_intercept(period[0:white_noise_break_point], rotation_rate[0:white_noise_break_point,1], -0.5, 1.0)
 gyro_wn_intercept_z, zfit_wn = get_intercept(period[0:white_noise_break_point], rotation_rate[0:white_noise_break_point,2], -0.5, 1.0)
@@ -205,6 +232,17 @@ gyro_min_z = np.amin(rotation_rate[:,2])
 gyro_min_x_index = np.argmin(rotation_rate[:,0])
 gyro_min_y_index = np.argmin(rotation_rate[:,1])
 gyro_min_z_index = np.argmin(rotation_rate[:,2])
+
+# use worst value
+worst_gyro_white_noise = np.amax([gyro_wn_intercept_x, gyro_wn_intercept_y, gyro_wn_intercept_z])
+worst_gyro_random_walk = np.amax([gyro_rr_intercept_x, gyro_rr_intercept_y, gyro_rr_intercept_z])
+
+# Write gyroscope parameters to yaml file
+yaml_file.write("#Gyroscope\n")
+# Convert back to radians here
+yaml_file.write("gyroscope_noise_density: " + repr(worst_gyro_white_noise * np.pi / 180) + " \n")
+yaml_file.write("gyroscope_random_walk: " + repr(worst_gyro_random_walk * np.pi / 180) + " \n")
+yaml_file.write("\n")
 
 print("GYROSCOPE:")
 print(f"X Angle Random Walk: {gyro_wn_intercept_x: .5f} deg/sqrt(s) {gyro_wn_intercept_x * 60: .5f} deg/sqrt(hr)")
@@ -223,27 +261,7 @@ average_gyro_white_noise = (gyro_wn_intercept_x + gyro_wn_intercept_y + gyro_wn_
 average_gyro_bias_instability = (gyro_min_x + gyro_min_y + gyro_min_z) / 3
 average_gyro_random_walk = (gyro_rr_intercept_x + gyro_rr_intercept_y + gyro_rr_intercept_z) / 3
 
-# use worst value
-worst_gyro_white_noise = np.amax([gyro_wn_intercept_x, gyro_wn_intercept_y, gyro_wn_intercept_z])
-worst_gyro_random_walk = np.amax([gyro_rr_intercept_x, gyro_rr_intercept_y, gyro_rr_intercept_z])
-
-yaml_file.write("#Gyroscope\n")
-# Convert back to radians here
-yaml_file.write("gyroscope_noise_density: " + repr(worst_gyro_white_noise * np.pi / 180) + " \n")
-yaml_file.write("gyroscope_random_walk: " + repr(worst_gyro_random_walk * np.pi / 180) + " \n")
-yaml_file.write("\n")
-
-
-if args.config:
-	yaml_file.write("rostopic: " + repr(rostopic) + " \n")
-	yaml_file.write("update_rate: " + repr(update_rate) + " \n")
-else:
-	yaml_file.write("rostopic: " + repr(rostopic) + " #Make sure this is correct\n")
-	yaml_file.write("update_rate: " + repr(update_rate) + " #Make sure this is correct\n")
-yaml_file.write("\n")
-yaml_file.close()
-
-
+# Plot gyroscope data
 fig2 = plt.figure(num="Gyro", dpi=dpi, figsize=figsize)
 
 plt.loglog(period, rotation_rate[:,0], "r-" , label='X')
@@ -288,5 +306,15 @@ plt.close()
 
 fig2.savefig('gyro.png', dpi=600, bbox_inches = "tight")
 
+# Write rostopic and update rate to yaml file
+if args.config:
+	yaml_file.write("rostopic: " + repr(rostopic) + " \n")
+	yaml_file.write("update_rate: " + repr(update_rate) + " \n")
+else:
+	yaml_file.write("rostopic: " + repr(rostopic) + " #Make sure this is correct\n")
+	yaml_file.write("update_rate: " + repr(update_rate) + " #Make sure this is correct\n")
+yaml_file.write("\n")
+yaml_file.close()
+
 print("Writing Kalibr imu.yaml file.")
-print("Make sure to update rostopic and rate.")
+print("Make sure to update the rostopic and rate in the file if a config file was not provided.")

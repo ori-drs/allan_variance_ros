@@ -1,4 +1,10 @@
 
+/**
+ * @file   AllanVarianceComputor.cpp
+ * @brief  Implementation of the AllanVarianceComputor class.
+ * @author Russell Buchanan
+ */
+
 #include "allan_variance_ros/AllanVarianceComputor.hpp"
 
 namespace allan_variance_ros {
@@ -210,9 +216,12 @@ void AllanVarianceComputor::allanVariance() {
       allan_variance[5] += std::pow(averages[k + 1][5] - averages[k][5], 2);
     }
     std::vector<double> avar = {
-        allan_variance[0] / (2 * (num_averages - 1)), allan_variance[1] / (2 * (num_averages - 1)),
-        allan_variance[2] / (2 * (num_averages - 1)), allan_variance[3] / (2 * (num_averages - 1)),
-        allan_variance[4] / (2 * (num_averages - 1)), allan_variance[5] / (2 * (num_averages - 1))};
+        allan_variance[0] / (2 * (num_averages - 1)),
+        allan_variance[1] / (2 * (num_averages - 1)),
+        allan_variance[2] / (2 * (num_averages - 1)),
+        allan_variance[3] / (2 * (num_averages - 1)),
+        allan_variance[4] / (2 * (num_averages - 1)),
+        allan_variance[5] / (2 * (num_averages - 1))};
 
     std::vector<double> allan_deviation = {std::sqrt(avar[0]), std::sqrt(avar[1]), std::sqrt(avar[2]),
                                            std::sqrt(avar[3]), std::sqrt(avar[4]), std::sqrt(avar[5])};

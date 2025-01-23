@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 # Taken from http://wiki.ros.org/rosbag/Cookbook
 
+"""
+@file   cookbag.py
+@brief  Script to reorganize a ROS bag file by message timestamps.
+@author Russell Buchanan
+"""
+
 import rosbag
 import argparse
 

@@ -1,0 +1,131 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.241.1/containers/docker-from-docker-compose
+{
+    "name": "ROS Dev Container",
+    "dockerComposeFile": [
+        "${localWorkspaceFolder}/.devcontainer/docker-compose.devcontainer.yaml"
+    ],
+    "service": "devcontainer",
+    "containerUser": "local",
+    "workspaceFolder": "/home/local/catkin_ws/src/${localWorkspaceFolderBasename}",
+
+    // Setup the environment
+    "initializeCommand": "${localWorkspaceFolder}/.devcontainer/setup_base_env.sh",
+
+    "onCreateCommand": "${containerWorkspaceFolder}/.devcontainer/setup_container.sh",
+
+    // Sets or overrides environment variables for the container for supporting services/tools (or sub-processes like terminals)
+    "remoteEnv": {
+        "DISPLAY": "${localEnv:DISPLAY}",
+        "XAUTHORITY": "/home/${containerEnv:USER_DOCKER}/.Xauthority",
+        "XDG_RUNTIME_DIR": "/run/user/${containerEnv:UID}"
+    },
+
+    // Add ptrace capability and configure security to facilitate debugging and display forwarding
+    "capAdd": [
+        "SYS_PTRACE",
+        "NET_ADMIN"
+    ],
+    "securityOpt": [
+        "seccomp=unconfined",
+        "apparmor=unconfined" // This allows RViz and other dbus-based apps to run
+    ],
+
+    // Configure tool-specific properties.
+    "customizations": {
+        // Configure properties specific to VS Code.
+        "vscode": {
+            // Add the IDs of extensions you want installed when the container is created.
+            "extensions": [
+                "augustocdias.tasks-shell-input@1.9.1",
+                "eamodio.gitlens",
+                "hbenl.vscode-test-explorer",
+                "llvm-vs-code-extensions.vscode-clangd",
+                "matepek.vscode-catch2-test-adapter",
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "ms-vscode.cpptools",
+                "ms-vscode.cpptools-themes",
+                "ms-vscode-remote.remote-containers",
+                "rioj7.command-variable",
+                "streetsidesoftware.code-spell-checker",
+                "twxs.cmake",
+                "ms-python.debugpy"
+            ],
+            "settings": {
+                "bazel.queriesShareServer": false,
+                "C_Cpp.intelliSenseEngine": "disabled", // Using clangd now!
+                "C_Cpp.default.cppStandard": "c++17",
+                "C_Cpp.default.cStandard": "gnu17",
+                "[cpp]": {
+                    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+                },
+                "dev.containers.dockerCredentialHelper": false,
+                "files.exclude": {
+                    "**/bazel-*": true,
+                    ".devcontainer/.vscode-server": true
+                },
+                "remote.localPortHost": "allInterfaces",
+                "search.exclude": {
+                    "**/bazel-*": true,
+                    ".devcontainer/.vscode-server": true
+                },
+                "testExplorer.useNativeTesting": true,
+                "testMate.cpp.test.advancedExecutables": [
+                    {
+                        "pattern": "bazel-bin/**/*.runfiles/**/*{test,Test,TEST,tests}",
+                        "cwd": "${absDirpath}",
+                        "executionWrapper": {
+                            "path": "${workspaceFolder}/.vscode/run_unit_test.sh",
+                            "args": [ "${workspaceFolder}", "${cmd}", "${argsFlat}" ]
+                        }
+                    }
+                ],
+                "testMate.cpp.debug.configTemplate": {
+                    "type": "cppvsdbg",
+                    "linux": {
+                        "type": "cppdbg", "MIMode": "gdb",
+                        "setupCommands": [
+                        {
+                            "description": "Enable pretty-printing for gdb",
+                            "text": "-enable-pretty-printing",
+                            "ignoreFailures": true
+                        },
+                        {
+                            "description": "Set Disassembly Flavor to Intel",
+                            "text": "-gdb-set disassembly-flavor intel",
+                            "ignoreFailures": true
+                        }
+                        ]
+                    },
+                    "darwin": { "type": "cppdbg", "MIMode": "lldb" },
+                    "win32": { "type": "cppvsdbg" },
+                    "program": "${exec}",
+                    "args": "${argsArray}",
+                    "cwd": "${absDirpath}",
+                    "env": "${envObj}",
+                    "environment": "${envObjArray}",
+                    "sourceFileMap": {"/proc/self/cwd" : "${workspaceFolder}"}
+                },
+                "terminal.integrated.defaultProfile.linux": "custom-bash",
+                // This setting prevents characters in the terminal from getting jumbled when characters are sent too fast
+                "terminal.integrated.localEchoLatencyThreshold": -1,
+                "terminal.integrated.profiles.linux": {
+                    "custom-bash": {
+                        "path": "bash",
+                        "args": ["--rcfile", "${workspaceFolder}/.vscode/.bashrc"]
+                    }
+                },
+                "clangd.path": "/usr/bin/clangd",
+                "clangd.arguments": [//"--log=verbose", // for debugging, disabled for now
+                                     // "--pretty", // for debugging, disabled for now
+                                     "--background-index",
+                                     //"--query-driver=/bin/arm-buildroot-linux-gnueabihf-g++", //for cross compile usage
+                                     "--clang-tidy",
+                                     "--completion-style=detailed",
+                                     "--header-insertion=never",
+                                     "--compile-commands-dir=${workspaceFolder}/"]
+            }
+        }
+    }
+}
